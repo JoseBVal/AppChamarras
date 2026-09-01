@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- ThermoWear -->
+    <color name="tw_blue_background">#395C9A</color>
+    <color name="tw_blue_background_dark">#34558F</color>
+
+    <color name="tw_text_primary">#FFFFFF</color>
+    <color name="tw_text_secondary">#B9C8ED</color>
+
+    <color name="tw_purple">#8985EF</color>
+    <color name="tw_orange">#FF9B68</color>
 </resources>
