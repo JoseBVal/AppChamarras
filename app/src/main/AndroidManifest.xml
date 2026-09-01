@@ -10,20 +10,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ThermoWear">
 
+        <!-- Pantalla Mis Dispositivos -->
+        <activity
+            android:name=".ui.devices.DevicesActivity"
+            android:exported="false" />
+
+        <!-- Activity original -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
 
+        <!-- Splash Screen: inicia la aplicación -->
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true">
 
             <intent-filter>
-
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
 
         </activity>
