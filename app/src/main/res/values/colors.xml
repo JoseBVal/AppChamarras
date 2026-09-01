@@ -12,4 +12,21 @@
 
     <color name="tw_purple">#8985EF</color>
     <color name="tw_orange">#FF9B68</color>
+
+    <color name="tw_background">#F9F8FE</color>
+    <color name="tw_primary">#244A8F</color>
+    <color name="tw_primary_dark">#173A77</color>
+
+    <color name="tw_text">#1F1F26</color>
+    <color name="tw_text_light">#777783</color>
+
+    <color name="tw_green">#20CE98</color>
+    <color name="tw_green_light">#E4FAF2</color>
+
+    <color name="tw_red">#D22323</color>
+
+    <color name="tw_card_background">#FFFFFF</color>
+    <color name="tw_image_background">#F2F1F7</color>
+
+    <color name="tw_nav_background">#F1F0F7</color>
 </resources>
