@@ -13,3 +13,20 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Android Studio / IntelliJ
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Local SDK path
+local.properties
+
+# Captures / device-specific files
+captures/
+
+# Logs
+*.log
