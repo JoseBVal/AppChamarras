@@ -7,8 +7,10 @@ import com.example.thermowear.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.content.Intent
+import android.widget.LinearLayout
 import com.example.thermowear.ui.adddevice.AddDeviceActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
+import com.example.thermowear.ui.history.HistoryActivity
 
 class DevicesActivity : AppCompatActivity() {
 
@@ -19,6 +21,7 @@ class DevicesActivity : AppCompatActivity() {
 
         val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddDevice)
         val btnControl = findViewById<MaterialButton>(R.id.btnControl)
+        val navHistory = findViewById<LinearLayout>(R.id.navHistory)
 
         btnAdd.setOnClickListener {
             val intent = Intent(
@@ -38,5 +41,16 @@ class DevicesActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        navHistory.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                HistoryActivity::class.java
+            )
+
+            startActivity(intent)
+        }
+
     }
 }
