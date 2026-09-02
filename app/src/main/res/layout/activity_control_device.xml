@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tw_background">
+
+    <!-- ========================= -->
+    <!-- BARRA SUPERIOR            -->
+    <!-- ========================= -->
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:paddingStart="12dp"
+        android:paddingEnd="14dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_arrow_back"
+            android:padding="9dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Volver"
+            app:tint="@color/tw_text"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chamarra Negro"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/tw_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="● Conectado (85%) 🔋"
+                android:textSize="12sp"
+                android:textColor="@color/tw_text_secondary"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnSettings"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_settings"
+            android:padding="9dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Configuración"
+            app:tint="@color/tw_text_secondary"/>
+
+    </LinearLayout>
+
+
+    <!-- ========================= -->
+    <!-- CONTENIDO                 -->
+    <!-- ========================= -->
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="30dp">
+
+
+            <!-- ========================= -->
+            <!-- TARJETA CHAMARRA          -->
+            <!-- ========================= -->
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="350dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#E5E5EC"
+                    app:cardBackgroundColor="#F9F8FD">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="40dp"
+                        android:src="@drawable/chamarra_zona"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Zonas de la chamarra"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- PECHO -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="82dp"
+                    android:layout_height="76dp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="14dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/tw_primary"
+                    app:cardBackgroundColor="#F8F7FC">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pecho"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="38° •"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/tw_primary"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- ESPALDA -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="76dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="18dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="#F8F7FC">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Espalda"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="40° •"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/tw_text"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- BRAZOS -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="76dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginBottom="18dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="#F8F7FC">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Brazos"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="35° •"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/tw_text"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- VIENTRE -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="76dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="18dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="#F8F7FC">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vientre"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="36° •"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/tw_text"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </FrameLayout>
+
+
+            <!-- ========================= -->
+            <!-- ZONA SELECCIONADA         -->
+            <!-- ========================= -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="265dp"
+                android:layout_marginTop="35dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#FFF9FB">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+
+                    <!-- TITULO + SWITCH -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ZONA SELECCIONADA"
+                                android:textSize="12sp"
+                                android:textColor="@color/tw_text_secondary"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pecho"
+                                android:textSize="27sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/tw_text"/>
+
+                        </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switchZone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"/>
+
+                    </LinearLayout>
+
+
+                    <!-- TEMPERATURA -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Actual"
+                                android:textSize="12sp"
+                                android:textColor="@color/tw_text_secondary"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="38°"
+                                android:textSize="46sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/tw_text"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtHeatLevel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginBottom="9dp"
+                            android:text="Nivel: Medio"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                    </LinearLayout>
+
+
+                    <!-- ETIQUETAS -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="BAJO"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="MEDIO"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:text="ALTO"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                    </LinearLayout>
+
+
+                    <!-- SLIDER -->
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/sliderTemperature"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:valueFrom="1"
+                        android:valueTo="3"
+                        android:stepSize="1"
+                        android:value="2"
+                        app:thumbRadius="10dp"
+                        app:trackHeight="8dp"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ========================= -->
+            <!-- MODO AUTOMATICO           -->
+            <!-- ========================= -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAutomatic"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="35dp"
+                android:text="Modo automático"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:icon="@drawable/ic_auto_mode"
+                app:iconTint="@color/white"
+                app:backgroundTint="@color/tw_primary"
+                app:cornerRadius="29dp"/>
+
+
+            <!-- ========================= -->
+            <!-- APAGAR TODO               -->
+            <!-- ========================= -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPowerOff"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="12dp"
+                android:text="Apagar todas las zonas"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="@color/tw_red"
+                app:icon="@drawable/ic_power"
+                app:iconTint="@color/tw_red"
+                app:backgroundTint="@android:color/transparent"
+                app:strokeColor="#F0B4BA"
+                app:strokeWidth="1dp"
+                app:cornerRadius="29dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

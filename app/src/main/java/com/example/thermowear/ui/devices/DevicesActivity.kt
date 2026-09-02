@@ -8,6 +8,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.content.Intent
 import com.example.thermowear.ui.adddevice.AddDeviceActivity
+import com.example.thermowear.ui.control.ControlDeviceActivity
 
 class DevicesActivity : AppCompatActivity() {
 
@@ -29,11 +30,13 @@ class DevicesActivity : AppCompatActivity() {
         }
 
         btnControl.setOnClickListener {
-            Toast.makeText(
+
+            val intent = Intent(
                 this,
-                "Control del dispositivo",
-                Toast.LENGTH_SHORT
-            ).show()
+                ControlDeviceActivity::class.java
+            )
+
+            startActivity(intent)
         }
     }
 }

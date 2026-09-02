@@ -10,7 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ThermoWear">
 
-        <!-- Pantalla de Añadir Dispositivo -->
+        <!-- Pantalla de Control del Dispositivo -->
+       <activity
+           android:name=".ui.control.ControlDeviceActivity"
+           android:exported="false" />
+
+       <!-- Pantalla de Añadir Dispositivo -->
         <activity
             android:name=".ui.adddevice.AddDeviceActivity"
             android:exported="false" />
