@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ThermoWear">
 
+        <!-- Pantalla de Alertas -->
+        <activity
+            android:name=".ui.alerts.AlertsActivity"
+            android:exported="false" />
+
         <!-- Pantalla de Historial -->
         <activity
             android:name=".ui.history.HistoryActivity"

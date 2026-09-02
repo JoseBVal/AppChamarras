@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomNavigation"
+    android:layout_width="match_parent"
+    android:layout_height="82dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@color/tw_nav_background">
+
+    <!-- INICIO -->
+
+    <LinearLayout
+        android:id="@+id/navHome"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/bgNavHome"
+            android:layout_width="78dp"
+            android:layout_height="38dp">
+
+            <ImageView
+                android:id="@+id/iconNavHome"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_home"
+                app:tint="@color/tw_text_secondary"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtNavHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inicio"
+            android:textSize="11sp"
+            android:textColor="@color/tw_text_secondary"/>
+
+    </LinearLayout>
+
+
+    <!-- HISTORIAL -->
+
+    <LinearLayout
+        android:id="@+id/navHistory"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/bgNavHistory"
+            android:layout_width="78dp"
+            android:layout_height="38dp">
+
+            <ImageView
+                android:id="@+id/iconNavHistory"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_history"
+                app:tint="@color/tw_text_secondary"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtNavHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Historial"
+            android:textSize="11sp"
+            android:textColor="@color/tw_text_secondary"/>
+
+    </LinearLayout>
+
+
+    <!-- ALERTAS -->
+
+    <LinearLayout
+        android:id="@+id/navAlerts"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/bgNavAlerts"
+            android:layout_width="78dp"
+            android:layout_height="38dp">
+
+            <ImageView
+                android:id="@+id/iconNavAlerts"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_notifications"
+                app:tint="@color/tw_text_secondary"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtNavAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alertas"
+            android:textSize="11sp"
+            android:textColor="@color/tw_text_secondary"/>
+
+    </LinearLayout>
+
+
+    <!-- AJUSTES -->
+
+    <LinearLayout
+        android:id="@+id/navSettings"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/bgNavSettings"
+            android:layout_width="78dp"
+            android:layout_height="38dp">
+
+            <ImageView
+                android:id="@+id/iconNavSettings"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_settings"
+                app:tint="@color/tw_text_secondary"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtNavSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ajustes"
+            android:textSize="11sp"
+            android:textColor="@color/tw_text_secondary"/>
+
+    </LinearLayout>
+
+</LinearLayout>

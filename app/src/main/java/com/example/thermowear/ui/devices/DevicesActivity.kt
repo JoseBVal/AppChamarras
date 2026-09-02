@@ -7,10 +7,14 @@ import com.example.thermowear.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.content.Intent
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.thermowear.ui.adddevice.AddDeviceActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
 import com.example.thermowear.ui.history.HistoryActivity
+import com.example.thermowear.ui.alerts.AlertsActivity
 
 class DevicesActivity : AppCompatActivity() {
 
@@ -22,6 +26,7 @@ class DevicesActivity : AppCompatActivity() {
         val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddDevice)
         val btnControl = findViewById<MaterialButton>(R.id.btnControl)
         val navHistory = findViewById<LinearLayout>(R.id.navHistory)
+        val navAlerts = findViewById<LinearLayout>(R.id.navAlerts)
 
         btnAdd.setOnClickListener {
             val intent = Intent(
@@ -52,5 +57,28 @@ class DevicesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        navAlerts.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    AlertsActivity::class.java
+                )
+            )
+        }
+
+        /* Marcar Seleccion de Navbar */
+        val bgNavHistory = findViewById<FrameLayout>(R.id.bgNavHome)
+        val iconNavHistory = findViewById<ImageView>(R.id.iconNavHome)
+        val txtNavHistory = findViewById<TextView>(R.id.txtNavHome)
+
+        bgNavHistory.setBackgroundResource(R.drawable.bg_nav_selected)
+
+        iconNavHistory.setColorFilter(
+            getColor(R.color.tw_text)
+        )
+
+        txtNavHistory.setTextColor(
+            getColor(R.color.tw_text)
+        )
     }
 }

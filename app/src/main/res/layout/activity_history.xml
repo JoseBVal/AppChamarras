@@ -65,7 +65,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationInclude"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -676,110 +676,13 @@
     <!-- ========================= -->
     <!-- BOTTOM NAV                -->
     <!-- ========================= -->
-
-    <LinearLayout
-        android:id="@+id/bottomNavigation"
+    <include
+        android:id="@+id/bottomNavigationInclude"
+        layout="@layout/view_bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="82dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="@color/tw_nav_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-
-        <LinearLayout
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_home"
-                app:tint="@color/tw_text_secondary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Inicio"
-                android:textSize="11sp"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/navHistory"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_history"
-                app:tint="@color/tw_primary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Historial"
-                android:textColor="@color/tw_primary"
-                android:textSize="11sp"/>
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_notifications"
-                app:tint="@color/tw_text_secondary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Alertas"
-                android:textSize="11sp"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_settings"
-                app:tint="@color/tw_text_secondary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ajustes"
-                android:textSize="11sp"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

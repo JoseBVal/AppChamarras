@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tw_background">
+
+    <!-- HEADER -->
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_menu"
+            android:padding="7dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Menú"
+            app:tint="@color/tw_text_secondary"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Alertas"
+            android:textAlignment="center"
+            android:textColor="@color/tw_primary"
+            android:textSize="25sp"
+            android:textStyle="bold"/>
+
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_notifications"
+            android:padding="7dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Notificaciones"
+            app:tint="@color/tw_text_secondary"/>
+
+    </LinearLayout>
+
+    <!-- CONTENIDO -->
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationInclude"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alertas recientes"
+                android:textSize="27sp"
+                android:textStyle="bold"
+                android:textColor="@color/tw_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Estado de tu chamarra térmica"
+                android:textSize="14sp"
+                android:textColor="@color/tw_text_secondary"/>
+
+
+            <!-- ALERTA 1 -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E6D6D6"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/tw_warning_red_light">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="13dp"
+                            android:src="@drawable/ic_thermostat"
+                            app:tint="@color/tw_warning_red"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Temperatura elevada"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="La zona Espalda alcanzó una temperatura elevada."
+                            android:textSize="13sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Hace 5 min"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_light"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ALERTA 2 -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E8DEC8"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/tw_warning_orange_light">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="13dp"
+                            android:src="@drawable/ic_battery"
+                            app:tint="@color/tw_warning_orange"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Batería baja"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="La batería de Chamarra Negra se encuentra al 20%."
+                            android:textSize="13sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Hace 30 min"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_light"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ALERTA 3 -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#D8DFEA"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/tw_warning_blue_light">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="13dp"
+                            android:src="@drawable/ic_bluetooth_off"
+                            app:tint="@color/tw_warning_blue"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dispositivo desconectado"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Se perdió la conexión con Chamarra Negra."
+                            android:textSize="13sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Ayer, 22:18"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_light"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ALERTA 4 -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E1E1E7"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/tw_warning_gray_light">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="13dp"
+                            android:src="@drawable/ic_warning"
+                            app:tint="@color/tw_warning_gray"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Revisión recomendada"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Revisa el estado de las zonas térmicas antes del próximo uso."
+                            android:textSize="13sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="26 ago"
+                            android:textSize="11sp"
+                            android:textColor="@color/tw_text_light"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <!-- BOTTOM NAV -->
+
+    <include
+        android:id="@+id/bottomNavigationInclude"
+        layout="@layout/view_bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="82dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,10 +2,14 @@ package com.example.thermowear.ui.history
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
 import com.example.thermowear.ui.devices.DevicesActivity
+import com.example.thermowear.ui.alerts.AlertsActivity
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -29,5 +33,28 @@ class HistoryActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+        val navAlerts = findViewById<LinearLayout>(R.id.navAlerts)
+        navAlerts.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    AlertsActivity::class.java
+                )
+            )
+        }
+        /* Marcar Seleccion de Navbar */
+        val bgNavHistory = findViewById<FrameLayout>(R.id.bgNavHistory)
+        val iconNavHistory = findViewById<ImageView>(R.id.iconNavHistory)
+        val txtNavHistory = findViewById<TextView>(R.id.txtNavHistory)
+
+        bgNavHistory.setBackgroundResource(R.drawable.bg_nav_selected)
+
+        iconNavHistory.setColorFilter(
+            getColor(R.color.tw_text)
+        )
+
+        txtNavHistory.setTextColor(
+            getColor(R.color.tw_text)
+        )
     }
 }
