@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.content.Intent
+import com.example.thermowear.ui.adddevice.AddDeviceActivity
 
 class DevicesActivity : AppCompatActivity() {
 
@@ -18,11 +20,12 @@ class DevicesActivity : AppCompatActivity() {
         val btnControl = findViewById<MaterialButton>(R.id.btnControl)
 
         btnAdd.setOnClickListener {
-            Toast.makeText(
+            val intent = Intent(
                 this,
-                "Añadir dispositivo",
-                Toast.LENGTH_SHORT
-            ).show()
+                AddDeviceActivity::class.java
+            )
+
+            startActivity(intent)
         }
 
         btnControl.setOnClickListener {
