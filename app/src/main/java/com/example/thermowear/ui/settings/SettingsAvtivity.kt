@@ -40,28 +40,6 @@ class SettingsActivity : AppCompatActivity() {
         val optionAbout =
             findViewById<LinearLayout>(R.id.optionAbout)
 
-        // Marcar Configuración como seleccionada
-        val bgNavSettings =
-            findViewById<FrameLayout>(R.id.bgNavSettings)
-
-        val iconNavSettings =
-            findViewById<ImageView>(R.id.iconNavSettings)
-
-        val txtNavSettings =
-            findViewById<TextView>(R.id.txtNavSettings)
-
-        bgNavSettings.setBackgroundResource(
-            R.drawable.bg_nav_selected
-        )
-
-        iconNavSettings.setColorFilter(
-            getColor(R.color.tw_text)
-        )
-
-        txtNavSettings.setTextColor(
-            getColor(R.color.tw_text)
-        )
-
         navHome.setOnClickListener {
             val intent = Intent(
                 this,
@@ -141,5 +119,33 @@ class SettingsActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        configureBottomNavigation()
+    }
+
+    private fun configureBottomNavigation() {
+
+        val bgNavSettings = findViewById<LinearLayout>(
+            R.id.bgNavSettings
+        )
+
+        val iconNavSettings = findViewById<ImageView>(
+            R.id.iconNavSettings
+        )
+
+        val txtNavSettings = findViewById<TextView>(
+            R.id.txtNavSettings
+        )
+
+        bgNavSettings.setBackgroundResource(
+            R.drawable.bg_nav_selected
+        )
+
+        iconNavSettings.setColorFilter(
+            getColor(R.color.tw_text)
+        )
+
+        txtNavSettings.setTextColor(
+            getColor(R.color.tw_text)
+        )
     }
 }

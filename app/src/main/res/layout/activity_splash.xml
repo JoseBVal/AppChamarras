@@ -11,14 +11,14 @@
         android:id="@+id/imgLogo"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="78dp"
+        android:layout_marginTop="150dp"
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
         android:src="@drawable/logo_thermowear"
-        app:shapeAppearanceOverlay="@style/CircleImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImage" />
 
     <TextView
         android:id="@+id/txtAppName"

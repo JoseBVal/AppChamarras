@@ -17,31 +17,34 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:gravity="center">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/bgNavHome"
             android:layout_width="78dp"
-            android:layout_height="38dp">
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
             <ImageView
                 android:id="@+id/iconNavHome"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_gravity="center"
                 android:src="@drawable/ic_home"
                 app:tint="@color/tw_text_secondary"/>
 
-        </FrameLayout>
+            <TextView
+                android:id="@+id/txtNavHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Inicio"
+                android:textSize="11sp"
+                android:textColor="@color/tw_text_secondary"/>
 
-        <TextView
-            android:id="@+id/txtNavHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Inicio"
-            android:textSize="11sp"
-            android:textColor="@color/tw_text_secondary"/>
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -53,34 +56,36 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:gravity="center">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/bgNavHistory"
             android:layout_width="78dp"
-            android:layout_height="38dp">
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
             <ImageView
                 android:id="@+id/iconNavHistory"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_gravity="center"
                 android:src="@drawable/ic_history"
                 app:tint="@color/tw_text_secondary"/>
 
-        </FrameLayout>
+            <TextView
+                android:id="@+id/txtNavHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Historial"
+                android:textSize="11sp"
+                android:textColor="@color/tw_text_secondary"/>
 
-        <TextView
-            android:id="@+id/txtNavHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Historial"
-            android:textSize="11sp"
-            android:textColor="@color/tw_text_secondary"/>
+        </LinearLayout>
 
     </LinearLayout>
-
 
     <!-- ALERTAS -->
 
@@ -89,31 +94,34 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:gravity="center">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/bgNavAlerts"
             android:layout_width="78dp"
-            android:layout_height="38dp">
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
             <ImageView
                 android:id="@+id/iconNavAlerts"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_gravity="center"
                 android:src="@drawable/ic_notifications"
                 app:tint="@color/tw_text_secondary"/>
 
-        </FrameLayout>
+            <TextView
+                android:id="@+id/txtNavAlerts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Alertas"
+                android:textSize="11sp"
+                android:textColor="@color/tw_text_secondary"/>
 
-        <TextView
-            android:id="@+id/txtNavAlerts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Alertas"
-            android:textSize="11sp"
-            android:textColor="@color/tw_text_secondary"/>
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -125,31 +133,34 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:gravity="center">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/bgNavSettings"
             android:layout_width="78dp"
-            android:layout_height="38dp">
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
             <ImageView
                 android:id="@+id/iconNavSettings"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_gravity="center"
                 android:src="@drawable/ic_settings"
                 app:tint="@color/tw_text_secondary"/>
 
-        </FrameLayout>
+            <TextView
+                android:id="@+id/txtNavSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Ajustes"
+                android:textSize="11sp"
+                android:textColor="@color/tw_text_secondary"/>
 
-        <TextView
-            android:id="@+id/txtNavSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ajustes"
-            android:textSize="11sp"
-            android:textColor="@color/tw_text_secondary"/>
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -53,19 +53,32 @@ class AlertsActivity : AppCompatActivity() {
                 )
             )
         }
+        configureBottomNavigation()
 
-        /* Marcar Seleccion de Navbar */
-        val bgNavHistory = findViewById<FrameLayout>(R.id.bgNavAlerts)
-        val iconNavHistory = findViewById<ImageView>(R.id.iconNavAlerts)
-        val txtNavHistory = findViewById<TextView>(R.id.txtNavAlerts)
+    }
+    private fun configureBottomNavigation() {
 
-        bgNavHistory.setBackgroundResource(R.drawable.bg_nav_selected)
+        val bgNavAlerts = findViewById<LinearLayout>(
+            R.id.bgNavAlerts
+        )
 
-        iconNavHistory.setColorFilter(
+        val iconNavAlerts = findViewById<ImageView>(
+            R.id.iconNavAlerts
+        )
+
+        val txtNavAlerts = findViewById<TextView>(
+            R.id.txtNavAlerts
+        )
+
+        bgNavAlerts.setBackgroundResource(
+            R.drawable.bg_nav_selected
+        )
+
+        iconNavAlerts.setColorFilter(
             getColor(R.color.tw_text)
         )
 
-        txtNavHistory.setTextColor(
+        txtNavAlerts.setTextColor(
             getColor(R.color.tw_text)
         )
     }

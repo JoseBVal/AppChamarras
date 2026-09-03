@@ -43,22 +43,28 @@ class HistoryActivity : AppCompatActivity() {
                 )
             )
         }
-        val navSettings = findViewById<LinearLayout>(R.id.navSettings)
-        navSettings.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    SettingsActivity::class.java
-                )
-            )
-        }
+        configureBottomNavigation()
 
-        /* Marcar Seleccion de Navbar */
-        val bgNavHistory = findViewById<FrameLayout>(R.id.bgNavHistory)
-        val iconNavHistory = findViewById<ImageView>(R.id.iconNavHistory)
-        val txtNavHistory = findViewById<TextView>(R.id.txtNavHistory)
+    }
+    /* Marcar Seleccion de Navbar */
 
-        bgNavHistory.setBackgroundResource(R.drawable.bg_nav_selected)
+    private fun configureBottomNavigation() {
+
+        val bgNavHistory = findViewById<LinearLayout>(
+            R.id.bgNavHistory
+        )
+
+        val iconNavHistory = findViewById<ImageView>(
+            R.id.iconNavHistory
+        )
+
+        val txtNavHistory = findViewById<TextView>(
+            R.id.txtNavHistory
+        )
+
+        bgNavHistory.setBackgroundResource(
+            R.drawable.bg_nav_selected
+        )
 
         iconNavHistory.setColorFilter(
             getColor(R.color.tw_text)
