@@ -2,12 +2,16 @@ package com.example.thermowear.ui.devices
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
+import com.example.thermowear.data.DeviceManager
+import com.example.thermowear.model.ThermoWearDevice
 import com.example.thermowear.ui.adddevice.AddDeviceActivity
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
@@ -17,37 +21,28 @@ import com.google.android.material.button.MaterialButton
 
 class DevicesActivity : AppCompatActivity() {
 
+    private lateinit var containerDevices: LinearLayout
+    private lateinit var emptyState: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_devices)
 
-        /* ============================= */
-        /* BOTONES                       */
-        /* ============================= */
+        containerDevices = findViewById(
+            R.id.containerDevices
+        )
 
-        val btnAdd = findViewById<MaterialButton>(
+        emptyState = findViewById(
+            R.id.emptyState
+        )
+
+        val btnAddDevice = findViewById<MaterialButton>(
             R.id.btnAddDevice
         )
 
-        val btnControl = findViewById<MaterialButton>(
-            R.id.btnControl
-        )
-
-        /* ============================= */
-        /* NAVEGACIÓN INFERIOR           */
-        /* ============================= */
-
-        val navHistory = findViewById<LinearLayout>(
-            R.id.navHistory
-        )
-
-        val navAlerts = findViewById<LinearLayout>(
-            R.id.navAlerts
-        )
-
-        val navSettings = findViewById<LinearLayout>(
-            R.id.navSettings
+        val btnEmptyAddDevice = findViewById<MaterialButton>(
+            R.id.btnEmptyAddDevice
         )
 
 
@@ -55,37 +50,306 @@ class DevicesActivity : AppCompatActivity() {
         /* AÑADIR DISPOSITIVO            */
         /* ============================= */
 
-        btnAdd.setOnClickListener {
+        btnAddDevice.setOnClickListener {
+            openAddDevice()
+        }
 
-            startActivity(
-                Intent(
-                    this,
-                    AddDeviceActivity::class.java
-                )
-            )
+        btnEmptyAddDevice.setOnClickListener {
+            openAddDevice()
         }
 
 
         /* ============================= */
-        /* CONTROLAR DISPOSITIVO         */
+        /* NAVEGACIÓN                    */
         /* ============================= */
 
-        btnControl.setOnClickListener {
+        configureNavigation()
+        configureBottomNavigation()
+    }
 
-            startActivity(
-                Intent(
-                    this,
-                    ControlDeviceActivity::class.java
-                )
+
+    override fun onResume() {
+        super.onResume()
+
+        loadDevices()
+    }
+
+
+    private fun openAddDevice() {
+
+        startActivity(
+            Intent(
+                this,
+                AddDeviceActivity::class.java
             )
+        )
+    }
+
+
+    /* ============================= */
+    /* CARGAR DISPOSITIVOS           */
+    /* ============================= */
+
+    private fun loadDevices() {
+
+        containerDevices.removeAllViews()
+
+        val devices = DeviceManager.getDevices(this)
+
+        if (devices.isEmpty()) {
+
+            emptyState.visibility = View.VISIBLE
+            containerDevices.visibility = View.GONE
+
+        } else {
+
+            emptyState.visibility = View.GONE
+            containerDevices.visibility = View.VISIBLE
+
+            devices.forEach { device ->
+
+                addDeviceCard(device)
+            }
+        }
+    }
+
+
+    /* ============================= */
+    /* CREAR TARJETA                 */
+    /* ============================= */
+
+    private fun addDeviceCard(
+        device: ThermoWearDevice
+    ) {
+
+        val view = layoutInflater.inflate(
+            R.layout.item_device,
+            containerDevices,
+            false
+        )
+
+        val txtDeviceName = view.findViewById<TextView>(
+            R.id.txtDeviceName
+        )
+
+        val txtDeviceVersion = view.findViewById<TextView>(
+            R.id.txtDeviceVersion
+        )
+
+        val txtDeviceStatus = view.findViewById<TextView>(
+            R.id.txtDeviceStatus
+        )
+
+        val btnConnectionAction = view.findViewById<MaterialButton>(
+            R.id.btnConnectionAction
+        )
+
+        val btnDeleteDevice = view.findViewById<MaterialButton>(
+            R.id.btnDeleteDevice
+        )
+
+
+        /* ============================= */
+        /* DATOS                         */
+        /* ============================= */
+
+        txtDeviceName.text = device.name
+
+        val zoneText = if (device.zoneCount == 1) {
+            "1 zona"
+        } else {
+            "${device.zoneCount} zonas"
+        }
+
+        txtDeviceVersion.text =
+            "ThermoWear ${device.version.name} · $zoneText"
+
+
+        /* ============================= */
+        /* CONEXIÓN                      */
+        /* ============================= */
+
+        if (device.connected) {
+
+            txtDeviceStatus.text =
+                "● Conectado · 🔋 ${device.battery}%"
+
+            txtDeviceStatus.setTextColor(
+                getColor(R.color.tw_green)
+            )
+
+            btnConnectionAction.text =
+                "Desconectar"
+
+        } else {
+
+            txtDeviceStatus.text =
+                "Desconectado · 🔋 ${device.battery}%"
+
+            txtDeviceStatus.setTextColor(
+                getColor(R.color.tw_text_light)
+            )
+
+            btnConnectionAction.text =
+                "Conectar"
         }
 
 
         /* ============================= */
-        /* HISTORIAL                     */
+        /* ABRIR CONTROL                 */
         /* ============================= */
 
-        navHistory.setOnClickListener {
+        view.setOnClickListener {
+
+            if (device.connected) {
+
+                openDevice(device)
+
+            } else {
+
+                Toast.makeText(
+                    this,
+                    "Conecta la chamarra antes de controlarla.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+
+        /* ============================= */
+        /* CONECTAR / DESCONECTAR        */
+        /* ============================= */
+
+        btnConnectionAction.setOnClickListener {
+
+            val newConnectionState =
+                !device.connected
+
+            DeviceManager.setConnection(
+                this,
+                device.id,
+                newConnectionState
+            )
+
+            val message = if (newConnectionState) {
+                "${device.name} conectada"
+            } else {
+                "${device.name} desconectada"
+            }
+
+            Toast.makeText(
+                this,
+                message,
+                Toast.LENGTH_SHORT
+            ).show()
+
+            loadDevices()
+        }
+
+
+        /* ============================= */
+        /* ELIMINAR                      */
+        /* ============================= */
+
+        btnDeleteDevice.setOnClickListener {
+
+            showDeleteDialog(device)
+        }
+
+
+        containerDevices.addView(view)
+    }
+
+
+    /* ============================= */
+    /* CONTROL DEL DISPOSITIVO       */
+    /* ============================= */
+
+    private fun openDevice(
+        device: ThermoWearDevice
+    ) {
+
+        val intent = Intent(
+            this,
+            ControlDeviceActivity::class.java
+        )
+
+        intent.putExtra(
+            "DEVICE_ID",
+            device.id
+        )
+
+        intent.putExtra(
+            "DEVICE_NAME",
+            device.name
+        )
+
+        intent.putExtra(
+            "DEVICE_VERSION",
+            device.version.name
+        )
+
+        intent.putExtra(
+            "DEVICE_BATTERY",
+            device.battery
+        )
+
+        intent.putExtra(
+            "DEVICE_CONNECTED",
+            device.connected
+        )
+
+        startActivity(intent)
+    }
+
+
+    /* ============================= */
+    /* CONFIRMAR ELIMINACIÓN         */
+    /* ============================= */
+
+    private fun showDeleteDialog(
+        device: ThermoWearDevice
+    ) {
+
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar dispositivo")
+            .setMessage(
+                "¿Deseas eliminar ${device.name} de ThermoWear?"
+            )
+            .setNegativeButton(
+                "Cancelar",
+                null
+            )
+            .setPositiveButton(
+                "Eliminar"
+            ) { _, _ ->
+
+                DeviceManager.removeDevice(
+                    this,
+                    device.id
+                )
+
+                Toast.makeText(
+                    this,
+                    "Dispositivo eliminado",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                loadDevices()
+            }
+            .show()
+    }
+
+
+    /* ============================= */
+    /* NAVEGACIÓN INFERIOR           */
+    /* ============================= */
+
+    private fun configureNavigation() {
+
+        findViewById<LinearLayout>(
+            R.id.navHistory
+        ).setOnClickListener {
 
             startActivity(
                 Intent(
@@ -96,11 +360,9 @@ class DevicesActivity : AppCompatActivity() {
         }
 
 
-        /* ============================= */
-        /* ALERTAS                       */
-        /* ============================= */
-
-        navAlerts.setOnClickListener {
+        findViewById<LinearLayout>(
+            R.id.navAlerts
+        ).setOnClickListener {
 
             startActivity(
                 Intent(
@@ -111,11 +373,9 @@ class DevicesActivity : AppCompatActivity() {
         }
 
 
-        /* ============================= */
-        /* AJUSTES                       */
-        /* ============================= */
-
-        navSettings.setOnClickListener {
+        findViewById<LinearLayout>(
+            R.id.navSettings
+        ).setOnClickListener {
 
             startActivity(
                 Intent(
@@ -124,15 +384,12 @@ class DevicesActivity : AppCompatActivity() {
                 )
             )
         }
-
-
-        /* ============================= */
-        /* NAVBAR - INICIO ACTIVO        */
-        /* ============================= */
-
-        configureBottomNavigation()
     }
 
+
+    /* ============================= */
+    /* INICIO SELECCIONADO           */
+    /* ============================= */
 
     private fun configureBottomNavigation() {
 

@@ -16,24 +16,26 @@
         android:id="@+id/topBar"
         android:layout_width="0dp"
         android:layout_height="58dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/white"
+        android:orientation="horizontal"
         android:paddingStart="12dp"
         android:paddingEnd="20dp"
+        android:background="@color/tw_card_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
 
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:src="@drawable/ic_arrow_back"
             android:background="@android:color/transparent"
-            android:padding="9dp"
             android:contentDescription="Volver"
+            android:padding="9dp"
+            android:src="@drawable/ic_arrow_back"
             app:tint="@color/tw_text"/>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -46,8 +48,6 @@
 
     </LinearLayout>
 
-
-    <!-- Línea inferior del encabezado -->
 
     <View
         android:id="@+id/headerDivider"
@@ -87,10 +87,10 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="95dp"
-                app:cardCornerRadius="40dp"
+                android:layout_marginTop="55dp"
                 app:cardBackgroundColor="@color/tw_primary"
-                app:cardElevation="8dp">
+                app:cardCornerRadius="40dp"
+                app:cardElevation="6dp">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -108,68 +108,64 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
-                android:text="Buscando dispositivos\ncercanos..."
+                android:layout_marginTop="30dp"
+                android:text="Dispositivos cercanos"
                 android:textAlignment="center"
                 android:textColor="@color/tw_text"
                 android:textSize="23sp"
                 android:textStyle="bold"/>
 
 
-            <!-- AYUDA -->
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="Asegúrate de que tu dispositivo esté\nencendido y cerca del teléfono"
+                android:layout_marginTop="10dp"
+                android:text="Selecciona la chamarra ThermoWear que deseas conectar."
                 android:textAlignment="center"
                 android:textColor="@color/tw_text_secondary"
-                android:textSize="16sp"
-                android:lineSpacingExtra="4dp"/>
+                android:textSize="15sp"
+                android:lineSpacingExtra="3dp"/>
 
 
-            <!-- TÍTULO DISPOSITIVOS -->
+            <!-- TÍTULO -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="45dp"
-                android:layout_marginBottom="18dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="14dp"
                 android:text="DISPOSITIVOS ENCONTRADOS"
                 android:textColor="@color/tw_primary"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold"/>
 
 
             <!-- ===================== -->
-            <!-- DISPOSITIVO 001       -->
+            <!-- THERMOWEAR V1         -->
             <!-- ===================== -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/tw_card_background"
                 app:cardCornerRadius="13dp"
                 app:cardElevation="0dp"
                 app:strokeColor="#DFE0E8"
-                app:strokeWidth="1dp"
-                app:cardBackgroundColor="@color/white">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:padding="16dp">
 
-
-                    <!-- ICONO -->
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        app:cardCornerRadius="8dp"
                         app:cardBackgroundColor="@color/tw_primary"
+                        app:cardCornerRadius="8dp"
                         app:cardElevation="0dp">
 
                         <ImageView
@@ -182,55 +178,50 @@
                     </com.google.android.material.card.MaterialCardView>
 
 
-                    <!-- DATOS -->
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:minWidth="0dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="14dp"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chamarra Térmica"
+                            android:text="ThermoWear V1"
+                            android:textColor="@color/tw_text"
                             android:textSize="17sp"
-                            android:textColor="@color/tw_text"/>
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="001"
-                            android:textSize="18sp"
-                            android:textColor="@color/tw_text"/>
+                            android:layout_marginTop="2dp"
+                            android:text="1 zona · Espalda"
+                            android:textColor="@color/tw_text_secondary"
+                            android:textSize="12sp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="◢ Señal excelente"
-                            android:textColor="#008F55"
-                            android:textSize="11sp"
-                            android:maxLines="1"/>
+                            android:layout_marginTop="3dp"
+                            android:text="● Señal excelente"
+                            android:textColor="@color/tw_green"
+                            android:textSize="11sp"/>
 
                     </LinearLayout>
 
 
-                    <!-- BOTÓN -->
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnConnect1"
-                        android:layout_width="115dp"
-                        android:layout_height="48dp"
+                        android:layout_width="105dp"
+                        android:layout_height="46dp"
                         android:text="Conectar"
-                        android:maxLines="1"
-                        android:singleLine="true"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         app:backgroundTint="@color/tw_primary"
-                        app:cornerRadius="24dp"/>
+                        app:cornerRadius="23dp"/>
 
                 </LinearLayout>
 
@@ -238,34 +229,32 @@
 
 
             <!-- ===================== -->
-            <!-- DISPOSITIVO 002       -->
+            <!-- THERMOWEAR V2         -->
             <!-- ===================== -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@color/tw_card_background"
                 app:cardCornerRadius="13dp"
                 app:cardElevation="0dp"
                 app:strokeColor="#DFE0E8"
-                app:strokeWidth="1dp"
-                app:cardBackgroundColor="@color/white">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:padding="16dp">
 
-
-                    <!-- ICONO -->
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
+                        app:cardBackgroundColor="@color/tw_primary"
                         app:cardCornerRadius="8dp"
-                        app:cardBackgroundColor="#E6E6EC"
                         app:cardElevation="0dp">
 
                         <ImageView
@@ -273,67 +262,59 @@
                             android:layout_height="match_parent"
                             android:padding="12dp"
                             android:src="@drawable/ic_shirt"
-                            app:tint="@color/tw_text_secondary"/>
+                            app:tint="@color/white"/>
 
                     </com.google.android.material.card.MaterialCardView>
 
-
-                    <!-- DATOS -->
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:minWidth="0dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="14dp"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chamarra Térmica"
+                            android:text="ThermoWear V2"
+                            android:textColor="@color/tw_text"
                             android:textSize="17sp"
-                            android:textColor="@color/tw_text"/>
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="002"
-                            android:textSize="18sp"
-                            android:textColor="@color/tw_text"/>
+                            android:layout_marginTop="2dp"
+                            android:text="2 zonas · Sensor en espalda alta"
+                            android:textColor="@color/tw_text_secondary"
+                            android:textSize="12sp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="◢ Buena señal"
-                            android:textColor="#E29B00"
-                            android:textSize="11sp"
-                            android:maxLines="1"/>
+                            android:layout_marginTop="3dp"
+                            android:text="● Buena señal"
+                            android:textColor="@color/tw_green"
+                            android:textSize="11sp"/>
 
                     </LinearLayout>
 
 
-                    <!-- BOTÓN -->
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnConnect2"
-                        android:layout_width="115dp"
-                        android:layout_height="48dp"
+                        android:layout_width="105dp"
+                        android:layout_height="46dp"
                         android:text="Conectar"
-                        android:maxLines="1"
-                        android:singleLine="true"
                         android:textAllCaps="false"
-                        android:textColor="@color/tw_text"
-                        android:textSize="14sp"
-                        app:backgroundTint="#F5F5FA"
-                        app:strokeColor="#757784"
-                        app:strokeWidth="1dp"
-                        app:cornerRadius="24dp"/>
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:backgroundTint="@color/tw_primary"
+                        app:cornerRadius="23dp"/>
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
-
 
         </LinearLayout>
 

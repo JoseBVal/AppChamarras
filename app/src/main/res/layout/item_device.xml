@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardDeviceItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="14dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/tw_card_background"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:strokeColor="#E3E5EC"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <!-- =============================== -->
+        <!-- INFORMACIÓN PRINCIPAL           -->
+        <!-- =============================== -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <!-- ICONO -->
+
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@color/tw_image_background">
+
+                <ImageView
+                    android:id="@+id/imgDevice"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_shirt"
+                    android:contentDescription="Chamarra ThermoWear"
+                    app:tint="@color/tw_primary"/>
+
+            </FrameLayout>
+
+
+            <!-- DATOS -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtDeviceName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chamarra ThermoWear"
+                    android:textColor="@color/tw_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/txtDeviceVersion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="ThermoWear V2 · 2 zonas"
+                    android:textColor="@color/tw_text_secondary"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/txtDeviceStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="● Conectado · 85%"
+                    android:textColor="@color/tw_green"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+
+            <!-- FLECHA -->
+
+            <ImageView
+                android:id="@+id/iconOpenDevice"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_right"
+                android:contentDescription="Abrir dispositivo"
+                app:tint="@color/tw_text_light"/>
+
+        </LinearLayout>
+
+
+        <!-- =============================== -->
+        <!-- ACCIONES                        -->
+        <!-- =============================== -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConnectionAction"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:text="Desconectar"
+                android:textAllCaps="false"
+                android:textColor="@color/tw_primary"
+                android:textSize="13sp"
+                app:backgroundTint="@color/tw_image_background"
+                app:cornerRadius="20dp"/>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteDevice"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:text="Eliminar"
+                android:textAllCaps="false"
+                android:textColor="@color/tw_red"
+                android:textSize="13sp"
+                app:backgroundTint="@color/tw_image_background"
+                app:cornerRadius="20dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

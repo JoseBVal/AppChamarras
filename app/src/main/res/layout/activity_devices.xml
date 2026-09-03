@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/tw_background">
 
+
     <!-- =============================== -->
     <!-- CABECERA                        -->
     <!-- =============================== -->
@@ -15,11 +16,11 @@
         android:id="@+id/topBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="15dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="10dp"
         android:background="@color/tw_background"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,9 +33,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Mis dispositivos"
+            android:textColor="@color/tw_text"
             android:textSize="27sp"
-            android:textStyle="bold"
-            android:textColor="@color/tw_text"/>
+            android:textStyle="bold"/>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddDevice"
@@ -42,17 +44,17 @@
             android:layout_height="50dp"
             android:text="Añadir"
             android:textAllCaps="false"
-            android:textStyle="bold"
-            android:textSize="15sp"
             android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
             android:paddingStart="16dp"
             android:paddingEnd="18dp"
             app:backgroundTint="@color/tw_primary"
             app:cornerRadius="16dp"
             app:icon="@drawable/ic_add"
-            app:iconTint="@color/white"
+            app:iconGravity="textStart"
             app:iconPadding="8dp"
-            app:iconGravity="textStart"/>
+            app:iconTint="@color/white"/>
 
     </LinearLayout>
 
@@ -65,8 +67,8 @@
         android:id="@+id/scrollContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:clipToPadding="false"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationInclude"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,323 +79,91 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="20dp"
+            android:paddingTop="8dp"
             android:paddingEnd="20dp"
-            android:paddingTop="4dp"
             android:paddingBottom="24dp">
 
 
             <!-- =============================== -->
-            <!-- DISPOSITIVO CONECTADO           -->
+            <!-- LISTA DE DISPOSITIVOS           -->
             <!-- =============================== -->
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardDevice"
+            <LinearLayout
+                android:id="@+id/containerDevices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/tw_card_background"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:strokeColor="#E5E7EB"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Indicador conectado -->
-
-                    <View
-                        android:id="@+id/viewConnectionIndicator"
-                        android:layout_width="6dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/tw_green"/>
-
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:padding="14dp">
-
-
-                        <!-- =============================== -->
-                        <!-- IMAGEN                          -->
-                        <!-- =============================== -->
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="210dp"
-                            app:cardBackgroundColor="@color/tw_image_background"
-                            app:cardCornerRadius="14dp"
-                            app:cardElevation="0dp"
-                            app:strokeWidth="0dp">
-
-
-                            <FrameLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <ImageView
-                                    android:id="@+id/imgDevice"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_margin="16dp"
-                                    android:src="@drawable/chamarra_negra"
-                                    android:scaleType="fitCenter"
-                                    android:adjustViewBounds="true"
-                                    android:contentDescription="Chamarra ThermoWear"/>
-
-                            </FrameLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-
-                        <!-- =============================== -->
-                        <!-- NOMBRE + ESTADO                 -->
-                        <!-- =============================== -->
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/txtDeviceName"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Chamarra Negra"
-                                android:textSize="21sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/tw_text"/>
-
-                            <TextView
-                                android:id="@+id/txtConnectionStatus"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/tw_green_light"
-                                android:paddingStart="10dp"
-                                android:paddingEnd="10dp"
-                                android:paddingTop="6dp"
-                                android:paddingBottom="6dp"
-                                android:text="● Conectado"
-                                android:textColor="@color/tw_green"
-                                android:textSize="13sp"
-                                android:textStyle="bold"/>
-
-                        </LinearLayout>
-
-
-                        <!-- =============================== -->
-                        <!-- VERSIÓN + ZONAS                 -->
-                        <!-- =============================== -->
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:src="@drawable/ic_info"
-                                    app:tint="@color/tw_primary"/>
-
-                                <TextView
-                                    android:id="@+id/txtDeviceVersion"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="10dp"
-                                    android:text="ThermoWear V2"
-                                    android:textColor="@color/tw_text_secondary"
-                                    android:textSize="15sp"/>
-
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:src="@drawable/ic_shirt"
-                                    app:tint="@color/tw_primary"/>
-
-                                <TextView
-                                    android:id="@+id/txtZoneCount"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:text="2 zonas"
-                                    android:textColor="@color/tw_text_secondary"
-                                    android:textSize="15sp"/>
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-
-                        <!-- DIVISOR -->
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="16dp"
-                            android:background="#E9E9EF"/>
-
-
-                        <!-- =============================== -->
-                        <!-- BATERÍA                         -->
-                        <!-- =============================== -->
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:src="@drawable/ic_battery"
-                                app:tint="@color/tw_primary"/>
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/txtBatteryPercent"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="85%"
-                                    android:textColor="@color/tw_text"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold"/>
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Batería"
-                                    android:textColor="@color/tw_text_light"
-                                    android:textSize="13sp"/>
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-
-                        <!-- =============================== -->
-                        <!-- CONTROLAR                       -->
-                        <!-- =============================== -->
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnControl"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:layout_marginTop="18dp"
-                            android:text="Controlar"
-                            android:textAllCaps="false"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="@color/white"
-                            app:backgroundTint="@color/tw_primary"
-                            app:cornerRadius="28dp"
-                            app:icon="@drawable/ic_settings"
-                            app:iconTint="@color/white"
-                            app:iconPadding="10dp"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+                android:orientation="vertical"/>
 
 
             <!-- =============================== -->
-            <!-- SIN MÁS DISPOSITIVOS            -->
+            <!-- ESTADO VACÍO                    -->
             <!-- =============================== -->
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardNoMoreDevices"
+            <LinearLayout
+                android:id="@+id/emptyState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                app:cardBackgroundColor="@color/tw_card_background"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#E3E5EC"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
 
-                <LinearLayout
+
+                <FrameLayout
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:background="@color/tw_image_background">
+
+                    <ImageView
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_shirt"
+                        android:contentDescription="Sin dispositivos"
+                        app:tint="@color/tw_text_light"/>
+
+                </FrameLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:text="No tienes dispositivos añadidos"
+                    android:textAlignment="center"
+                    android:textColor="@color/tw_text"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
+                    android:layout_marginTop="8dp"
+                    android:text="Conecta una chamarra ThermoWear para comenzar."
+                    android:textAlignment="center"
+                    android:textColor="@color/tw_text_secondary"
+                    android:textSize="15sp"/>
 
-                    <FrameLayout
-                        android:layout_width="58dp"
-                        android:layout_height="58dp"
-                        android:background="@color/tw_image_background">
 
-                        <ImageView
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_shirt"
-                            app:tint="@color/tw_text_light"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEmptyAddDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Añadir dispositivo"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/tw_primary"
+                    app:cornerRadius="24dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/white"/>
 
-                    </FrameLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="No tienes más dispositivos añadidos"
-                            android:textColor="@color/tw_text"
-                            android:textSize="15sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Añade otra chamarra ThermoWear cuando la conectes."
-                            android:textColor="@color/tw_text_light"
-                            android:textSize="13sp"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
         </LinearLayout>
 
