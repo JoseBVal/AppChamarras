@@ -42,19 +42,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/txtDeviceName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chamarra Negro"
+                android:text="ThermoWear"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/tw_text"/>
 
             <TextView
+                android:id="@+id/txtDeviceStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="● Conectado (85%) 🔋"
+                android:text="● Conectado · 🔋 85%"
                 android:textSize="12sp"
-                android:textColor="@color/tw_text_secondary"/>
+                android:textColor="@color/tw_green"/>
 
         </LinearLayout>
 
@@ -95,12 +97,27 @@
 
 
             <!-- ========================= -->
+            <!-- INFORMACIÓN DEL MODELO    -->
+            <!-- ========================= -->
+
+            <TextView
+                android:id="@+id/txtDeviceVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ThermoWear V2"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/tw_primary"/>
+
+
+            <!-- ========================= -->
             <!-- TARJETA CHAMARRA          -->
             <!-- ========================= -->
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp">
+                android:layout_height="330dp"
+                android:layout_marginTop="12dp">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
@@ -114,7 +131,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="40dp"
+                        android:layout_margin="38dp"
                         android:src="@drawable/chamarra_zona"
                         android:scaleType="fitCenter"
                         android:contentDescription="Zonas de la chamarra"/>
@@ -122,39 +139,48 @@
                 </com.google.android.material.card.MaterialCardView>
 
 
-                <!-- PECHO -->
+                <!-- ZONA PRINCIPAL -->
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="82dp"
-                    android:layout_height="76dp"
-                    android:layout_gravity="top|start"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="14dp"
-                    app:cardCornerRadius="12dp"
+                    android:id="@+id/cardZonePrimary"
+                    android:layout_width="118dp"
+                    android:layout_height="82dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardCornerRadius="14dp"
                     app:cardElevation="1dp"
                     app:strokeWidth="2dp"
                     app:strokeColor="@color/tw_primary"
-                    app:cardBackgroundColor="#F8F7FC">
+                    app:cardBackgroundColor="#FFF8F4">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="6dp">
 
                         <TextView
+                            android:id="@+id/txtPrimaryZoneName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pecho"
-                            android:textSize="12sp"
+                            android:text="Espalda alta"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
                             android:textColor="@color/tw_text"/>
 
                         <TextView
+                            android:id="@+id/txtPrimaryZoneInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="38° •"
+                            android:layout_marginTop="4dp"
+                            android:text="38 °C"
+                            android:textSize="15sp"
                             android:textStyle="bold"
-                            android:textSize="20sp"
                             android:textColor="@color/tw_primary"/>
 
                     </LinearLayout>
@@ -162,114 +188,48 @@
                 </com.google.android.material.card.MaterialCardView>
 
 
-                <!-- ESPALDA -->
+                <!-- ZONA SECUNDARIA -->
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="76dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="18dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="1dp"
-                    app:cardBackgroundColor="#F8F7FC">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Espalda"
-                            android:textSize="12sp"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="40° •"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
-                            android:textColor="@color/tw_text"/>
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <!-- BRAZOS -->
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="76dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="bottom|start"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginBottom="18dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="1dp"
-                    app:cardBackgroundColor="#F8F7FC">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Brazos"
-                            android:textSize="12sp"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="35° •"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
-                            android:textColor="@color/tw_text"/>
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <!-- VIENTRE -->
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="76dp"
-                    android:layout_height="70dp"
+                    android:id="@+id/cardZoneSecondary"
+                    android:layout_width="118dp"
+                    android:layout_height="82dp"
                     android:layout_gravity="bottom|end"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="18dp"
-                    app:cardCornerRadius="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardCornerRadius="14dp"
                     app:cardElevation="1dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#E5E5EC"
                     app:cardBackgroundColor="#F8F7FC">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="6dp">
 
                         <TextView
+                            android:id="@+id/txtSecondaryZoneName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vientre"
-                            android:textSize="12sp"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="36° •"
+                            android:text="Espalda baja"
+                            android:textSize="13sp"
                             android:textStyle="bold"
-                            android:textSize="20sp"
                             android:textColor="@color/tw_text"/>
+
+                        <TextView
+                            android:id="@+id/txtSecondaryZoneInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Apagada"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text_secondary"/>
 
                     </LinearLayout>
 
@@ -279,106 +239,117 @@
 
 
             <!-- ========================= -->
-            <!-- ZONA SELECCIONADA         -->
+            <!-- CONTROL DE ZONA           -->
             <!-- ========================= -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="265dp"
-                android:layout_marginTop="35dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#ECEAF0"
                 app:cardBackgroundColor="#FFF9FB">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="24dp">
 
 
-                    <!-- TITULO + SWITCH -->
+                    <!-- ZONA SELECCIONADA -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ZONA SELECCIONADA"
+                        android:textSize="12sp"
+                        android:textColor="@color/tw_text_secondary"/>
+
+                    <TextView
+                        android:id="@+id/txtSelectedZone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Espalda alta"
+                        android:textSize="27sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/tw_text"/>
+
+
+                    <!-- TEMPERATURA REAL -->
 
                     <LinearLayout
+                        android:id="@+id/containerTemperature"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="ZONA SELECCIONADA"
-                                android:textSize="12sp"
-                                android:textColor="@color/tw_text_secondary"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Pecho"
-                                android:textSize="27sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/tw_text"/>
-
-                        </LinearLayout>
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/switchZone"
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"/>
+                            android:text="Temperatura actual"
+                            android:textSize="12sp"
+                            android:textColor="@color/tw_text_secondary"/>
+
+                        <TextView
+                            android:id="@+id/txtCurrentTemperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="38 °C"
+                            android:textSize="40sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_text"/>
 
                     </LinearLayout>
 
 
-                    <!-- TEMPERATURA -->
+                    <!-- INTENSIDAD -->
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:gravity="bottom"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Actual"
-                                android:textSize="12sp"
-                                android:textColor="@color/tw_text_secondary"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="38°"
-                                android:textSize="46sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/tw_text"/>
-
-                        </LinearLayout>
+                            android:layout_weight="1"
+                            android:text="Intensidad de calor"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_text"/>
 
                         <TextView
                             android:id="@+id/txtHeatLevel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:layout_marginBottom="9dp"
-                            android:text="Nivel: Medio"
-                            android:textSize="12sp"
-                            android:textColor="@color/tw_text_secondary"/>
+                            android:text="Medio"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tw_primary"/>
 
                     </LinearLayout>
+
+
+                    <!-- SLIDER -->
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/sliderIntensity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:valueFrom="1"
+                        android:valueTo="3"
+                        android:stepSize="1"
+                        android:value="2"
+                        app:thumbRadius="11dp"
+                        app:trackHeight="8dp"/>
 
 
                     <!-- ETIQUETAS -->
@@ -386,7 +357,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -418,18 +388,31 @@
                     </LinearLayout>
 
 
-                    <!-- SLIDER -->
+                    <!-- APLICAR INTENSIDAD -->
 
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/sliderTemperature"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnApplyIntensity"
                         android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="18dp"
+                        android:text="Aplicar intensidad"
+                        android:textAllCaps="false"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/tw_primary"
+                        app:cornerRadius="16dp"/>
+
+
+                    <!-- ESTADO -->
+
+                    <TextView
+                        android:id="@+id/txtZoneStatus"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:valueFrom="1"
-                        android:valueTo="3"
-                        android:stepSize="1"
-                        android:value="2"
-                        app:thumbRadius="10dp"
-                        app:trackHeight="8dp"/>
+                        android:layout_marginTop="18dp"
+                        android:text="Estado: Apagada"
+                        android:textSize="13sp"
+                        android:textColor="@color/tw_text_secondary"/>
 
                 </LinearLayout>
 
@@ -437,43 +420,88 @@
 
 
             <!-- ========================= -->
-            <!-- MODO AUTOMATICO           -->
+            <!-- CONTROL DE ENCENDIDO      -->
             <!-- ========================= -->
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAutomatic"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="35dp"
-                android:text="Modo automático"
-                android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                app:icon="@drawable/ic_auto_mode"
-                app:iconTint="@color/white"
-                app:backgroundTint="@color/tw_primary"
-                app:cornerRadius="29dp"/>
-
-
-            <!-- ========================= -->
-            <!-- APAGAR TODO               -->
-            <!-- ========================= -->
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPowerOff"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="12dp"
-                android:text="Apagar todas las zonas"
-                android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textColor="@color/tw_red"
-                app:icon="@drawable/ic_power"
-                app:iconTint="@color/tw_red"
-                app:backgroundTint="@android:color/transparent"
-                app:strokeColor="#F0B4BA"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="1dp"
-                app:cornerRadius="29dp"/>
+                app:strokeColor="#ECEAF0"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CONTROL DE ENCENDIDO"
+                        android:textSize="12sp"
+                        android:textColor="@color/tw_text_secondary"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Calefacción"
+                        android:textSize="21sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/tw_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Activa o detén el calentamiento de la zona."
+                        android:textSize="12sp"
+                        android:textColor="@color/tw_text_secondary"/>
+
+
+                    <!-- ENCENDER / APAGAR ZONA -->
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnZonePower"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="18dp"
+                        android:text="Encender zona"
+                        android:textAllCaps="false"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_power"
+                        app:iconTint="@color/white"
+                        app:backgroundTint="@color/tw_primary"
+                        app:cornerRadius="18dp"/>
+
+
+                    <!-- ENCENDER / APAGAR TODAS -->
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAllZonesPower"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Encender todas las zonas"
+                        android:textAllCaps="false"
+                        android:textStyle="bold"
+                        android:textColor="@color/tw_primary"
+                        app:icon="@drawable/ic_power"
+                        app:iconTint="@color/tw_primary"
+                        app:backgroundTint="@android:color/transparent"
+                        app:strokeColor="@color/tw_primary"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="18dp"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
