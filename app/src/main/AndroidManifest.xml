@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ThermoWear">
 
+        <!-- Pantalla de Configuración -->
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false" />
+
         <!-- Pantalla de Alertas -->
         <activity
             android:name=".ui.alerts.AlertsActivity"

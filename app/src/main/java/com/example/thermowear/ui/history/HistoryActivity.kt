@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.alerts.AlertsActivity
+import com.example.thermowear.ui.settings.SettingsActivity
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -42,6 +43,16 @@ class HistoryActivity : AppCompatActivity() {
                 )
             )
         }
+        val navSettings = findViewById<LinearLayout>(R.id.navSettings)
+        navSettings.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
+                )
+            )
+        }
+
         /* Marcar Seleccion de Navbar */
         val bgNavHistory = findViewById<FrameLayout>(R.id.bgNavHistory)
         val iconNavHistory = findViewById<ImageView>(R.id.iconNavHistory)

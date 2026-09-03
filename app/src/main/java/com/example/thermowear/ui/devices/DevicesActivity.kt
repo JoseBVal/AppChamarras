@@ -15,6 +15,7 @@ import com.example.thermowear.ui.adddevice.AddDeviceActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
 import com.example.thermowear.ui.history.HistoryActivity
 import com.example.thermowear.ui.alerts.AlertsActivity
+import com.example.thermowear.ui.settings.SettingsActivity
 
 class DevicesActivity : AppCompatActivity() {
 
@@ -27,6 +28,7 @@ class DevicesActivity : AppCompatActivity() {
         val btnControl = findViewById<MaterialButton>(R.id.btnControl)
         val navHistory = findViewById<LinearLayout>(R.id.navHistory)
         val navAlerts = findViewById<LinearLayout>(R.id.navAlerts)
+        val navSettings = findViewById<LinearLayout>(R.id.navSettings)
 
         btnAdd.setOnClickListener {
             val intent = Intent(
@@ -65,6 +67,16 @@ class DevicesActivity : AppCompatActivity() {
                 )
             )
         }
+
+        navSettings.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
+                )
+            )
+        }
+
 
         /* Marcar Seleccion de Navbar */
         val bgNavHistory = findViewById<FrameLayout>(R.id.bgNavHome)
