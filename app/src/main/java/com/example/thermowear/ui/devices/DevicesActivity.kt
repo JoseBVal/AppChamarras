@@ -23,6 +23,7 @@ import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
 import com.example.thermowear.ui.history.HistoryActivity
 import com.example.thermowear.ui.settings.SettingsActivity
+import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.button.MaterialButton
 
 class DevicesActivity : AppCompatActivity() {
@@ -44,9 +45,7 @@ class DevicesActivity : AppCompatActivity() {
         ) {
                 granted ->
 
-            if (
-                !granted
-            ) {
+            if (!granted) {
 
                 Toast.makeText(
                     this,
@@ -181,8 +180,8 @@ class DevicesActivity : AppCompatActivity() {
 
     private fun openAddDevice() {
 
-        startActivity(
-
+        ScreenTransitions.openSlide(
+            this,
             Intent(
                 this,
                 AddDeviceActivity::class.java
@@ -207,9 +206,7 @@ class DevicesActivity : AppCompatActivity() {
             )
 
 
-        if (
-            devices.isEmpty()
-        ) {
+        if (devices.isEmpty()) {
 
             emptyState.visibility =
                 View.VISIBLE
@@ -289,14 +286,20 @@ class DevicesActivity : AppCompatActivity() {
         /* DATOS                         */
         /* ============================= */
 
+        val versionName =
+            device.version.name
+
+
+        val displayName =
+            "Chamarra Forge $versionName"
+
+
         txtDeviceName.text =
-            device.name
+            displayName
 
 
         val zoneText =
-            if (
-                device.zoneCount == 1
-            ) {
+            if (device.zoneCount == 1) {
 
                 "1 zona"
 
@@ -307,19 +310,17 @@ class DevicesActivity : AppCompatActivity() {
 
 
         txtDeviceVersion.text =
-            "ThermoWear ${device.version.name} · $zoneText"
+            "Forge $versionName · $zoneText"
 
 
         /* ============================= */
         /* CONEXIÓN                      */
         /* ============================= */
 
-        if (
-            device.connected
-        ) {
+        if (device.connected) {
 
             txtDeviceStatus.text =
-                "● Conectado · 🔋 ${device.battery}%"
+                "● Conectado"
 
 
             txtDeviceStatus.setTextColor(
@@ -335,7 +336,7 @@ class DevicesActivity : AppCompatActivity() {
         } else {
 
             txtDeviceStatus.text =
-                "Desconectado · 🔋 ${device.battery}%"
+                "● Desconectado"
 
 
             txtDeviceStatus.setTextColor(
@@ -356,12 +357,11 @@ class DevicesActivity : AppCompatActivity() {
 
         view.setOnClickListener {
 
-            if (
-                device.connected
-            ) {
+            if (device.connected) {
 
                 openDevice(
-                    device
+                    device,
+                    displayName
                 )
 
             } else {
@@ -388,25 +388,20 @@ class DevicesActivity : AppCompatActivity() {
 
                 DeviceManager
                     .setConnection(
-
                         this,
-
                         device.id,
-
                         newConnectionState
                     )
 
 
                 val message =
-                    if (
-                        newConnectionState
-                    ) {
+                    if (newConnectionState) {
 
-                        "${device.name} conectada"
+                        "$displayName conectada"
 
                     } else {
 
-                        "${device.name} desconectada"
+                        "$displayName desconectada"
                     }
 
 
@@ -429,7 +424,8 @@ class DevicesActivity : AppCompatActivity() {
             .setOnClickListener {
 
                 showDeleteDialog(
-                    device
+                    device,
+                    displayName
                 )
             }
 
@@ -445,7 +441,8 @@ class DevicesActivity : AppCompatActivity() {
     /* ============================= */
 
     private fun openDevice(
-        device: ThermoWearDevice
+        device: ThermoWearDevice,
+        displayName: String
     ) {
 
         val intent =
@@ -461,9 +458,13 @@ class DevicesActivity : AppCompatActivity() {
         )
 
 
+        /*
+         * Nombre visual correcto para
+         * la pantalla de Control.
+         */
         intent.putExtra(
             "DEVICE_NAME",
-            device.name
+            displayName
         )
 
 
@@ -473,6 +474,12 @@ class DevicesActivity : AppCompatActivity() {
         )
 
 
+        /*
+         * Se mantiene temporalmente por
+         * compatibilidad con ControlDeviceActivity.
+         *
+         * Ya no se muestra en Mis Dispositivos.
+         */
         intent.putExtra(
             "DEVICE_BATTERY",
             device.battery
@@ -485,7 +492,8 @@ class DevicesActivity : AppCompatActivity() {
         )
 
 
-        startActivity(
+        ScreenTransitions.openSlide(
+            this,
             intent
         )
     }
@@ -496,7 +504,8 @@ class DevicesActivity : AppCompatActivity() {
     /* ============================= */
 
     private fun showDeleteDialog(
-        device: ThermoWearDevice
+        device: ThermoWearDevice,
+        displayName: String
     ) {
 
         AlertDialog.Builder(
@@ -506,7 +515,7 @@ class DevicesActivity : AppCompatActivity() {
                 "Eliminar dispositivo"
             )
             .setMessage(
-                "¿Deseas eliminar ${device.name} de ThermoWear?"
+                "¿Deseas eliminar $displayName de ThermoWear?"
             )
             .setNegativeButton(
                 "Cancelar",
@@ -549,8 +558,8 @@ class DevicesActivity : AppCompatActivity() {
             R.id.navHistory
         ).setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     HistoryActivity::class.java
@@ -563,8 +572,8 @@ class DevicesActivity : AppCompatActivity() {
             R.id.navAlerts
         ).setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     AlertsActivity::class.java
@@ -577,8 +586,8 @@ class DevicesActivity : AppCompatActivity() {
             R.id.navSettings
         ).setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     SettingsActivity::class.java
