@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
+import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
@@ -1169,6 +1170,12 @@ class ControlDeviceActivity : AppCompatActivity() {
             "El dispositivo está desconectado.",
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+
+    override fun finish() {
+        super.finish()
+        ScreenTransitions.closeSlide(this)
     }
 
 

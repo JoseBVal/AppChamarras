@@ -19,6 +19,7 @@ import com.example.thermowear.model.ThermoWearVersion
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.history.HistoryActivity
 import com.example.thermowear.ui.settings.SettingsActivity
+import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
@@ -841,7 +842,8 @@ class AlertsActivity : AppCompatActivity() {
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
 
 
-            startActivity(
+            ScreenTransitions.openFade(
+                this,
                 intent
             )
         }
@@ -849,8 +851,8 @@ class AlertsActivity : AppCompatActivity() {
 
         navHistory.setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     HistoryActivity::class.java
@@ -861,14 +863,20 @@ class AlertsActivity : AppCompatActivity() {
 
         navSettings.setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     SettingsActivity::class.java
                 )
             )
         }
+    }
+
+
+    override fun finish() {
+        super.finish()
+        ScreenTransitions.closeFade(this)
     }
 
 

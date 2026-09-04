@@ -34,7 +34,7 @@
             android:orientation="horizontal">
 
 
-            <!-- ICONO -->
+            <!-- LOGO FORGE -->
 
             <FrameLayout
                 android:layout_width="64dp"
@@ -43,12 +43,12 @@
 
                 <ImageView
                     android:id="@+id/imgDevice"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_shirt"
-                    android:contentDescription="Chamarra ThermoWear"
-                    app:tint="@color/tw_primary"/>
+                    android:src="@drawable/logo_forge"
+                    android:contentDescription="Logo de Forge"
+                    android:scaleType="fitCenter"/>
 
             </FrameLayout>
 
@@ -66,7 +66,7 @@
                     android:id="@+id/txtDeviceName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chamarra ThermoWear"
+                    android:text="Chamarra Forge V2"
                     android:textColor="@color/tw_text"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="ThermoWear V2 · 2 zonas"
+                    android:text="Forge V2 · 2 zonas"
                     android:textColor="@color/tw_text_secondary"
                     android:textSize="14sp"/>
 
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="● Conectado · 85%"
+                    android:text="● Conectado"
                     android:textColor="@color/tw_green"
                     android:textSize="13sp"
                     android:textStyle="bold"/>

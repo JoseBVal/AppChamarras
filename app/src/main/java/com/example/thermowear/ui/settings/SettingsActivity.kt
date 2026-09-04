@@ -14,6 +14,7 @@ import com.example.thermowear.data.SettingsManager
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.history.HistoryActivity
+import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
@@ -213,13 +214,17 @@ class SettingsActivity : AppCompatActivity() {
                 Intent.FLAG_ACTIVITY_CLEAR_TOP or
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
 
-            startActivity(intent)
+            ScreenTransitions.openFade(
+                this,
+                intent
+            )
         }
 
 
         navHistory.setOnClickListener {
 
-            startActivity(
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     HistoryActivity::class.java
@@ -230,7 +235,8 @@ class SettingsActivity : AppCompatActivity() {
 
         navAlerts.setOnClickListener {
 
-            startActivity(
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     AlertsActivity::class.java
@@ -241,13 +247,20 @@ class SettingsActivity : AppCompatActivity() {
 
         optionAbout.setOnClickListener {
 
-            startActivity(
+            ScreenTransitions.openSlide(
+                this,
                 Intent(
                     this,
                     AboutActivity::class.java
                 )
             )
         }
+    }
+
+
+    override fun finish() {
+        super.finish()
+        ScreenTransitions.closeFade(this)
     }
 
 

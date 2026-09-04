@@ -28,6 +28,7 @@ import com.example.thermowear.model.ThermoWearZone
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.settings.SettingsActivity
+import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -1532,6 +1533,12 @@ class HistoryActivity : AppCompatActivity() {
                 ).toInt()
 
 
+    override fun finish() {
+        super.finish()
+        ScreenTransitions.closeFade(this)
+    }
+
+
     /* ============================ */
     /* BOTTOM NAVIGATION            */
     /* ============================ */
@@ -1558,7 +1565,8 @@ class HistoryActivity : AppCompatActivity() {
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
 
 
-            startActivity(
+            ScreenTransitions.openFade(
+                this,
                 intent
             )
         }
@@ -1572,8 +1580,8 @@ class HistoryActivity : AppCompatActivity() {
 
         navAlerts.setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     AlertsActivity::class.java
@@ -1590,8 +1598,8 @@ class HistoryActivity : AppCompatActivity() {
 
         navSettings.setOnClickListener {
 
-            startActivity(
-
+            ScreenTransitions.openFade(
+                this,
                 Intent(
                     this,
                     SettingsActivity::class.java

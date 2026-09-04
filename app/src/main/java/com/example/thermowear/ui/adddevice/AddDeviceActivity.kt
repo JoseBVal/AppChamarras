@@ -8,6 +8,7 @@ import com.example.thermowear.R
 import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.model.ThermoWearDevice
 import com.example.thermowear.model.ThermoWearVersion
+import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.button.MaterialButton
 
 class AddDeviceActivity : AppCompatActivity() {
@@ -69,6 +70,12 @@ class AddDeviceActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+
+    override fun finish() {
+        super.finish()
+        ScreenTransitions.closeSlide(this)
     }
 
 
