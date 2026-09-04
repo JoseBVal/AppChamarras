@@ -49,10 +49,6 @@
             android:textStyle="bold"/>
 
 
-        <!--
-            Espacio equivalente al botón atrás para
-            mantener el título visualmente centrado.
-        -->
         <View
             android:layout_width="44dp"
             android:layout_height="44dp"/>
@@ -165,7 +161,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="18dp"
-                    android:text="ThermoWear es la aplicación móvil desarrollada para el control y supervisión de las chaquetas térmicas Forge de V-Trade. Permite gestionar sus zonas de calefacción, seleccionar niveles de intensidad, consultar el historial de uso y recibir alertas importantes del dispositivo."
+                    android:text="ThermoWear es la aplicación móvil desarrollada para el control y supervisión de las chamarras térmicas Forge de V-Trade. Permite gestionar la calefacción, seleccionar niveles de intensidad, consultar el historial de uso y recibir alertas importantes del dispositivo."
                     android:textColor="@color/tw_text"
                     android:textSize="14sp"
                     android:lineSpacingExtra="3dp"/>
@@ -173,19 +169,83 @@
             </com.google.android.material.card.MaterialCardView>
 
 
-            <!-- MODELOS -->
+            <!-- FORGE -->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="MODELOS COMPATIBLES"
+                android:text="LÍNEA FORGE"
                 android:textColor="@color/tw_primary"
                 android:textSize="13sp"
                 android:textStyle="bold"/>
 
 
-            <!-- V1 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E6"
+                app:cardBackgroundColor="@color/white">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="18dp">
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#FFF1E8">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="7dp"
+                            android:src="@drawable/logo_forge"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Logo Forge"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="15dp"
+                        android:text="Forge es la línea de chamarras térmicas desarrollada dentro del proyecto V-Trade. Cada versión representa una etapa de evolución y mejora del producto."
+                        android:textColor="@color/tw_text"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="2dp"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- EVOLUCIÓN -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="EVOLUCIÓN DE LOS MODELOS"
+                android:textColor="@color/tw_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+
+
+            <!-- FORGE V1 -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -216,10 +276,10 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="11dp"
-                            android:src="@drawable/ic_shirt"
-                            android:contentDescription="Forge Mark V1"
-                            app:tint="@color/tw_primary"/>
+                            android:padding="6dp"
+                            android:src="@drawable/logo_forge"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Forge V1"/>
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -235,28 +295,20 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Forge Mark V1"
+                            android:text="Forge V1"
                             android:textColor="@color/tw_text"
                             android:textSize="17sp"
                             android:textStyle="bold"/>
 
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="1 zona térmica • Espalda"
+                            android:text="Primera versión experimental de la línea Forge, desarrollada como prototipo inicial para validar el funcionamiento básico del sistema térmico."
                             android:textColor="@color/tw_text_secondary"
-                            android:textSize="12sp"/>
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="Alimentación mediante powerbank"
-                            android:textColor="@color/tw_text_secondary"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="2dp"/>
 
                     </LinearLayout>
 
@@ -265,7 +317,7 @@
             </com.google.android.material.card.MaterialCardView>
 
 
-            <!-- V2 -->
+            <!-- FORGE V2 -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -296,10 +348,10 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="11dp"
-                            android:src="@drawable/ic_shirt"
-                            android:contentDescription="Forge Mark V2"
-                            app:tint="@color/tw_primary"/>
+                            android:padding="6dp"
+                            android:src="@drawable/logo_forge"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Forge V2"/>
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -315,37 +367,93 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Forge Mark V2"
+                            android:text="Forge V2"
                             android:textColor="@color/tw_text"
                             android:textSize="17sp"
                             android:textStyle="bold"/>
 
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="2 zonas térmicas • Espalda alta y baja"
+                            android:text="Versión mejorada actual, desarrollada a partir de las pruebas y resultados obtenidos con Forge V1."
                             android:textColor="@color/tw_text_secondary"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="2dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- FUTURAS VERSIONES -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E6"
+                app:cardBackgroundColor="@color/white">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="18dp">
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F4F4F8">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="+"
+                            android:textColor="@color/tw_primary"
+                            android:textSize="25sp"
+                            android:textStyle="bold"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="15dp"
+                        android:orientation="vertical">
 
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="Sensor de temperatura en espalda alta"
-                            android:textColor="@color/tw_text_secondary"
-                            android:textSize="12sp"/>
+                            android:text="Próximas versiones"
+                            android:textColor="@color/tw_text"
+                            android:textSize="17sp"
+                            android:textStyle="bold"/>
 
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="Alimentación mediante powerbank"
+                            android:layout_marginTop="5dp"
+                            android:text="La línea Forge continuará evolucionando mediante nuevas versiones hasta alcanzar una propuesta final preparada para su futura comercialización."
                             android:textColor="@color/tw_text_secondary"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="2dp"/>
 
                     </LinearLayout>
 
@@ -387,7 +495,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="• Control independiente de zonas térmicas"
+                        android:text="• Control de calefacción"
                         android:textColor="@color/tw_text"
                         android:textSize="14sp"/>
 
