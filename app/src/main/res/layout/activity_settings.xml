@@ -57,86 +57,14 @@
             android:paddingBottom="28dp">
 
 
-            <!-- DISPOSITIVO -->
+            <!-- DESCRIPCIÓN -->
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="DISPOSITIVO"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/tw_primary"/>
-
-
-            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#E0E0E6"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:id="@+id/optionDevice"
-                    android:layout_width="match_parent"
-                    android:layout_height="86dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="#E8EEF8">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="12dp"
-                            android:src="@drawable/ic_shirt"
-                            app:tint="@color/tw_primary"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Chamarra Negra"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="Conectado"
-                            android:textSize="12sp"
-                            android:textColor="@color/tw_green"/>
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/tw_text_secondary"/>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+                android:text="Personaliza las preferencias generales de ThermoWear."
+                android:textColor="@color/tw_text_secondary"
+                android:textSize="13sp"/>
 
 
             <!-- NOTIFICACIONES -->
@@ -144,7 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="24dp"
                 android:text="NOTIFICACIONES"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -200,7 +128,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Alertas importantes del dispositivo"
+                                android:text="Alertas importantes de ThermoWear"
                                 android:textSize="11sp"
                                 android:textColor="@color/tw_text_secondary"/>
 
@@ -380,7 +308,10 @@
                         android:gravity="center_vertical"
                         android:paddingStart="18dp"
                         android:paddingEnd="18dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
                         <ImageView
                             android:layout_width="28dp"
