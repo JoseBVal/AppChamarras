@@ -18,18 +18,28 @@ class AddDeviceActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_add_device)
 
-        val btnBack = findViewById<ImageButton>(
-            R.id.btnBack
-        )
 
-        val btnConnect1 = findViewById<MaterialButton>(
-            R.id.btnConnect1
-        )
+        val btnBack =
+            findViewById<ImageButton>(
+                R.id.btnBack
+            )
 
-        val btnConnect2 = findViewById<MaterialButton>(
-            R.id.btnConnect2
-        )
 
+        val btnConnect1 =
+            findViewById<MaterialButton>(
+                R.id.btnConnect1
+            )
+
+
+        val btnConnect2 =
+            findViewById<MaterialButton>(
+                R.id.btnConnect2
+            )
+
+
+        /* ============================= */
+        /* VOLVER                        */
+        /* ============================= */
 
         btnBack.setOnClickListener {
             finish()
@@ -37,7 +47,7 @@ class AddDeviceActivity : AppCompatActivity() {
 
 
         /* ============================= */
-        /* THERMOWEAR V1                 */
+        /* FORGE V1                      */
         /* ============================= */
 
         btnConnect1.setOnClickListener {
@@ -45,7 +55,7 @@ class AddDeviceActivity : AppCompatActivity() {
             connectDevice(
                 ThermoWearDevice(
                     id = "TW-V1-001",
-                    name = "Chamarra ThermoWear V1",
+                    name = "Chamarra Forge V1",
                     version = ThermoWearVersion.V1,
                     battery = 80,
                     connected = true
@@ -55,7 +65,7 @@ class AddDeviceActivity : AppCompatActivity() {
 
 
         /* ============================= */
-        /* THERMOWEAR V2                 */
+        /* FORGE V2                      */
         /* ============================= */
 
         btnConnect2.setOnClickListener {
@@ -63,7 +73,7 @@ class AddDeviceActivity : AppCompatActivity() {
             connectDevice(
                 ThermoWearDevice(
                     id = "TW-V2-001",
-                    name = "Chamarra ThermoWear V2",
+                    name = "Chamarra Forge V2",
                     version = ThermoWearVersion.V2,
                     battery = 85,
                     connected = true
@@ -73,20 +83,33 @@ class AddDeviceActivity : AppCompatActivity() {
     }
 
 
+    /* ============================= */
+    /* TRANSICIÓN AL VOLVER          */
+    /* ============================= */
+
     override fun finish() {
+
         super.finish()
-        ScreenTransitions.closeSlide(this)
+
+        ScreenTransitions.closeSlide(
+            this
+        )
     }
 
+
+    /* ============================= */
+    /* CONECTAR DISPOSITIVO          */
+    /* ============================= */
 
     private fun connectDevice(
         device: ThermoWearDevice
     ) {
 
-        val alreadyAdded = DeviceManager.isDeviceAdded(
-            this,
-            device.id
-        )
+        val alreadyAdded =
+            DeviceManager.isDeviceAdded(
+                this,
+                device.id
+            )
 
 
         DeviceManager.addOrUpdateDevice(
