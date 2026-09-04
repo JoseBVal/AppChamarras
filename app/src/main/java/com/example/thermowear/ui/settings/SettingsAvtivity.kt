@@ -3,6 +3,8 @@ package com.example.thermowear.ui.settings
 import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
+import android.view.View
+import com.example.thermowear.data.AlertManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -121,6 +123,11 @@ class SettingsActivity : AppCompatActivity() {
         }
         configureBottomNavigation()
     }
+    override fun onResume() {
+        super.onResume()
+
+        updateAlertIndicator()
+    }
 
     private fun configureBottomNavigation() {
 
@@ -147,5 +154,23 @@ class SettingsActivity : AppCompatActivity() {
         txtNavSettings.setTextColor(
             getColor(R.color.tw_text)
         )
+    }
+    private fun updateAlertIndicator() {
+
+        val alertDot =
+            findViewById<View>(
+                R.id.alertDot
+            )
+
+        alertDot.visibility =
+            if (
+                AlertManager.hasUnreadAlerts(
+                    this
+                )
+            ) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
     }
 }

@@ -7,7 +7,10 @@
     android:layout_height="match_parent"
     android:background="@color/tw_background">
 
-    <!-- HEADER -->
+
+    <!-- ========================= -->
+    <!-- HEADER                    -->
+    <!-- ========================= -->
 
     <LinearLayout
         android:id="@+id/topBar"
@@ -34,7 +37,10 @@
 
     </LinearLayout>
 
-    <!-- CONTENIDO -->
+
+    <!-- ========================= -->
+    <!-- CONTENIDO                 -->
+    <!-- ========================= -->
 
     <ScrollView
         android:layout_width="0dp"
@@ -52,7 +58,10 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="24dp"
-            android:paddingBottom="30dp">
+            android:paddingBottom="32dp">
+
+
+            <!-- TITULO -->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,308 +71,163 @@
                 android:textStyle="bold"
                 android:textColor="@color/tw_text"/>
 
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Estado de tu chamarra térmica"
+                android:text="Eventos importantes de tus dispositivos ThermoWear"
                 android:textSize="14sp"
                 android:textColor="@color/tw_text_secondary"/>
 
 
-            <!-- ALERTA 1 -->
+            <!-- ========================= -->
+            <!-- ESTADO VACÍO              -->
+            <!-- ========================= -->
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
+                android:id="@+id/emptyAlertsState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="32dp"
+                android:paddingBottom="32dp">
+
+                <ImageView
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="@color/tw_text_light"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="No hay alertas"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/tw_text"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="Cuando ocurra un evento importante aparecerá aquí."
+                    android:textSize="13sp"
+                    android:textColor="@color/tw_text_secondary"/>
+
+            </LinearLayout>
+
+
+            <!-- ========================= -->
+            <!-- ALERTAS DINÁMICAS         -->
+            <!-- ========================= -->
+
+            <LinearLayout
+                android:id="@+id/alertsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#E6D6D6"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/tw_warning_red_light">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="13dp"
-                            android:src="@drawable/ic_thermostat"
-                            app:tint="@color/tw_warning_red"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Temperatura elevada"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="La zona Espalda alcanzó una temperatura elevada."
-                            android:textSize="13sp"
-                            android:textColor="@color/tw_text_secondary"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Hace 5 min"
-                            android:textSize="11sp"
-                            android:textColor="@color/tw_text_light"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+                android:orientation="vertical"/>
 
 
-            <!-- ALERTA 2 -->
+            <!-- ========================= -->
+            <!-- BORRAR ALERTAS            -->
+            <!-- ========================= -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClearAlerts"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:text="Borrar historial de alertas"
+                android:textAllCaps="false"
+                android:textColor="@color/tw_text_secondary"
+                android:visibility="gone"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="14dp"
+                app:strokeColor="#DDDDE3"
+                app:strokeWidth="1dp"/>
+
+
+            <!-- ========================= -->
+            <!-- MODO DEMOSTRACIÓN         -->
+            <!-- ========================= -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:cardCornerRadius="16dp"
+                android:layout_marginTop="28dp"
+                app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#E8DEC8"
-                app:cardBackgroundColor="@color/white">
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E6E6EB"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:padding="18dp">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/tw_warning_orange_light">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="13dp"
-                            android:src="@drawable/ic_battery"
-                            app:tint="@color/tw_warning_orange"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
+                        android:text="Demostración"
+                        android:textColor="@color/tw_text"
+                        android:textSize="17sp"
+                        android:textStyle="bold"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Batería baja"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/tw_text"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Mientras se integra el hardware real puedes probar las alertas de ThermoWear."
+                        android:textColor="@color/tw_text_secondary"
+                        android:textSize="12sp"/>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="La batería de Chamarra Negra se encuentra al 20%."
-                            android:textSize="13sp"
-                            android:textColor="@color/tw_text_secondary"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Hace 30 min"
-                            android:textSize="11sp"
-                            android:textColor="@color/tw_text_light"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDemoDisconnect"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Probar desconexión"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/tw_primary"
+                        app:cornerRadius="14dp"/>
 
-                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDemoTemperature"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Probar temperatura V2"
+                        android:textAllCaps="false"
+                        android:textColor="@color/tw_primary"
+                        app:backgroundTint="@color/white"
+                        app:cornerRadius="14dp"
+                        app:strokeColor="@color/tw_primary"
+                        app:strokeWidth="1dp"/>
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-
-            <!-- ALERTA 3 -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#D8DFEA"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/tw_warning_blue_light">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="13dp"
-                            android:src="@drawable/ic_bluetooth_off"
-                            app:tint="@color/tw_warning_blue"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Dispositivo desconectado"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="Se perdió la conexión con Chamarra Negra."
-                            android:textSize="13sp"
-                            android:textColor="@color/tw_text_secondary"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Ayer, 22:18"
-                            android:textSize="11sp"
-                            android:textColor="@color/tw_text_light"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <!-- ALERTA 4 -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#E1E1E7"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/tw_warning_gray_light">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="13dp"
-                            android:src="@drawable/ic_warning"
-                            app:tint="@color/tw_warning_gray"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Revisión recomendada"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/tw_text"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="Revisa el estado de las zonas térmicas antes del próximo uso."
-                            android:textSize="13sp"
-                            android:textColor="@color/tw_text_secondary"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="26 ago"
-                            android:textSize="11sp"
-                            android:textColor="@color/tw_text_light"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
     </ScrollView>
 
 
-    <!-- BOTTOM NAV -->
+    <!-- ========================= -->
+    <!-- NAVEGACIÓN INFERIOR       -->
+    <!-- ========================= -->
 
     <include
         android:id="@+id/bottomNavigationInclude"
@@ -373,5 +237,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

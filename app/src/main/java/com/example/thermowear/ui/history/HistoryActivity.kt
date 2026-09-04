@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
 import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.data.HistoryManager
+import com.example.thermowear.data.AlertManager
 import com.example.thermowear.model.HistorySession
 import com.example.thermowear.model.HistoryZoneUsage
 import com.example.thermowear.model.IntensityPeriod
@@ -122,10 +123,9 @@ class HistoryActivity : AppCompatActivity() {
 
         super.onResume()
 
-
         loadDevices()
+        updateAlertIndicator()
     }
-
 
     private fun bindViews() {
 
@@ -1638,5 +1638,23 @@ class HistoryActivity : AppCompatActivity() {
                 R.color.tw_text
             )
         )
+    }
+    private fun updateAlertIndicator() {
+
+        val alertDot =
+            findViewById<View>(
+                R.id.alertDot
+            )
+
+        alertDot.visibility =
+            if (
+                AlertManager.hasUnreadAlerts(
+                    this
+                )
+            ) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
     }
 }

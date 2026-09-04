@@ -1,17 +1,23 @@
 package com.example.thermowear.ui.devices
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
+import com.example.thermowear.data.AlertManager
 import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.model.ThermoWearDevice
+import com.example.thermowear.notifications.NotificationHelper
 import com.example.thermowear.ui.adddevice.AddDeviceActivity
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
@@ -21,42 +27,103 @@ import com.google.android.material.button.MaterialButton
 
 class DevicesActivity : AppCompatActivity() {
 
-    private lateinit var containerDevices: LinearLayout
-    private lateinit var emptyState: LinearLayout
+    private lateinit var containerDevices:
+            LinearLayout
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var emptyState:
+            LinearLayout
 
-        setContentView(R.layout.activity_devices)
 
-        containerDevices = findViewById(
-            R.id.containerDevices
+    /*
+     * Solicitud moderna del permiso
+     * de notificaciones.
+     */
+    private val notificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) {
+                granted ->
+
+            if (
+                !granted
+            ) {
+
+                Toast.makeText(
+                    this,
+                    "Puedes activar las notificaciones más adelante desde los ajustes de Android.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+
+        super.onCreate(
+            savedInstanceState
         )
 
-        emptyState = findViewById(
-            R.id.emptyState
+
+        setContentView(
+            R.layout.activity_devices
         )
 
-        val btnAddDevice = findViewById<MaterialButton>(
-            R.id.btnAddDevice
-        )
 
-        val btnEmptyAddDevice = findViewById<MaterialButton>(
-            R.id.btnEmptyAddDevice
-        )
+        /*
+         * Crear el canal es seguro aunque
+         * ya exista.
+         */
+        NotificationHelper
+            .createNotificationChannel(
+                this
+            )
+
+
+        requestNotificationPermissionIfNeeded()
+
+
+        containerDevices =
+            findViewById(
+                R.id.containerDevices
+            )
+
+
+        emptyState =
+            findViewById(
+                R.id.emptyState
+            )
+
+
+        val btnAddDevice =
+            findViewById<MaterialButton>(
+                R.id.btnAddDevice
+            )
+
+
+        val btnEmptyAddDevice =
+            findViewById<MaterialButton>(
+                R.id.btnEmptyAddDevice
+            )
 
 
         /* ============================= */
         /* AÑADIR DISPOSITIVO            */
         /* ============================= */
 
-        btnAddDevice.setOnClickListener {
-            openAddDevice()
-        }
+        btnAddDevice
+            .setOnClickListener {
 
-        btnEmptyAddDevice.setOnClickListener {
-            openAddDevice()
-        }
+                openAddDevice()
+            }
+
+
+        btnEmptyAddDevice
+            .setOnClickListener {
+
+                openAddDevice()
+            }
 
 
         /* ============================= */
@@ -64,20 +131,58 @@ class DevicesActivity : AppCompatActivity() {
         /* ============================= */
 
         configureNavigation()
+
         configureBottomNavigation()
     }
 
 
     override fun onResume() {
+
         super.onResume()
 
+
         loadDevices()
+
+        updateAlertIndicator()
+    }
+
+
+    /* ============================= */
+    /* PERMISO DE NOTIFICACIONES     */
+    /* ============================= */
+
+    private fun requestNotificationPermissionIfNeeded() {
+
+        if (
+            Build.VERSION.SDK_INT <
+            Build.VERSION_CODES.TIRAMISU
+        ) {
+
+            return
+        }
+
+
+        if (
+            checkSelfPermission(
+                Manifest.permission.POST_NOTIFICATIONS
+            ) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+
+            return
+        }
+
+
+        notificationPermissionLauncher.launch(
+            Manifest.permission.POST_NOTIFICATIONS
+        )
     }
 
 
     private fun openAddDevice() {
 
         startActivity(
+
             Intent(
                 this,
                 AddDeviceActivity::class.java
@@ -92,23 +197,43 @@ class DevicesActivity : AppCompatActivity() {
 
     private fun loadDevices() {
 
-        containerDevices.removeAllViews()
+        containerDevices
+            .removeAllViews()
 
-        val devices = DeviceManager.getDevices(this)
 
-        if (devices.isEmpty()) {
+        val devices =
+            DeviceManager.getDevices(
+                this
+            )
 
-            emptyState.visibility = View.VISIBLE
-            containerDevices.visibility = View.GONE
+
+        if (
+            devices.isEmpty()
+        ) {
+
+            emptyState.visibility =
+                View.VISIBLE
+
+
+            containerDevices.visibility =
+                View.GONE
 
         } else {
 
-            emptyState.visibility = View.GONE
-            containerDevices.visibility = View.VISIBLE
+            emptyState.visibility =
+                View.GONE
 
-            devices.forEach { device ->
 
-                addDeviceCard(device)
+            containerDevices.visibility =
+                View.VISIBLE
+
+
+            devices.forEach {
+                    device ->
+
+                addDeviceCard(
+                    device
+                )
             }
         }
     }
@@ -122,44 +247,64 @@ class DevicesActivity : AppCompatActivity() {
         device: ThermoWearDevice
     ) {
 
-        val view = layoutInflater.inflate(
-            R.layout.item_device,
-            containerDevices,
-            false
-        )
+        val view =
+            layoutInflater.inflate(
+                R.layout.item_device,
+                containerDevices,
+                false
+            )
 
-        val txtDeviceName = view.findViewById<TextView>(
-            R.id.txtDeviceName
-        )
 
-        val txtDeviceVersion = view.findViewById<TextView>(
-            R.id.txtDeviceVersion
-        )
+        val txtDeviceName =
+            view.findViewById<TextView>(
+                R.id.txtDeviceName
+            )
 
-        val txtDeviceStatus = view.findViewById<TextView>(
-            R.id.txtDeviceStatus
-        )
 
-        val btnConnectionAction = view.findViewById<MaterialButton>(
-            R.id.btnConnectionAction
-        )
+        val txtDeviceVersion =
+            view.findViewById<TextView>(
+                R.id.txtDeviceVersion
+            )
 
-        val btnDeleteDevice = view.findViewById<MaterialButton>(
-            R.id.btnDeleteDevice
-        )
+
+        val txtDeviceStatus =
+            view.findViewById<TextView>(
+                R.id.txtDeviceStatus
+            )
+
+
+        val btnConnectionAction =
+            view.findViewById<MaterialButton>(
+                R.id.btnConnectionAction
+            )
+
+
+        val btnDeleteDevice =
+            view.findViewById<MaterialButton>(
+                R.id.btnDeleteDevice
+            )
 
 
         /* ============================= */
         /* DATOS                         */
         /* ============================= */
 
-        txtDeviceName.text = device.name
+        txtDeviceName.text =
+            device.name
 
-        val zoneText = if (device.zoneCount == 1) {
-            "1 zona"
-        } else {
-            "${device.zoneCount} zonas"
-        }
+
+        val zoneText =
+            if (
+                device.zoneCount == 1
+            ) {
+
+                "1 zona"
+
+            } else {
+
+                "${device.zoneCount} zonas"
+            }
+
 
         txtDeviceVersion.text =
             "ThermoWear ${device.version.name} · $zoneText"
@@ -169,14 +314,20 @@ class DevicesActivity : AppCompatActivity() {
         /* CONEXIÓN                      */
         /* ============================= */
 
-        if (device.connected) {
+        if (
+            device.connected
+        ) {
 
             txtDeviceStatus.text =
                 "● Conectado · 🔋 ${device.battery}%"
 
+
             txtDeviceStatus.setTextColor(
-                getColor(R.color.tw_green)
+                getColor(
+                    R.color.tw_green
+                )
             )
+
 
             btnConnectionAction.text =
                 "Desconectar"
@@ -186,9 +337,13 @@ class DevicesActivity : AppCompatActivity() {
             txtDeviceStatus.text =
                 "Desconectado · 🔋 ${device.battery}%"
 
+
             txtDeviceStatus.setTextColor(
-                getColor(R.color.tw_text_light)
+                getColor(
+                    R.color.tw_text_light
+                )
             )
+
 
             btnConnectionAction.text =
                 "Conectar"
@@ -201,9 +356,13 @@ class DevicesActivity : AppCompatActivity() {
 
         view.setOnClickListener {
 
-            if (device.connected) {
+            if (
+                device.connected
+            ) {
 
-                openDevice(device)
+                openDevice(
+                    device
+                )
 
             } else {
 
@@ -220,44 +379,64 @@ class DevicesActivity : AppCompatActivity() {
         /* CONECTAR / DESCONECTAR        */
         /* ============================= */
 
-        btnConnectionAction.setOnClickListener {
+        btnConnectionAction
+            .setOnClickListener {
 
-            val newConnectionState =
-                !device.connected
+                val newConnectionState =
+                    !device.connected
 
-            DeviceManager.setConnection(
-                this,
-                device.id,
-                newConnectionState
-            )
 
-            val message = if (newConnectionState) {
-                "${device.name} conectada"
-            } else {
-                "${device.name} desconectada"
+                DeviceManager
+                    .setConnection(
+
+                        this,
+
+                        device.id,
+
+                        newConnectionState
+                    )
+
+
+                val message =
+                    if (
+                        newConnectionState
+                    ) {
+
+                        "${device.name} conectada"
+
+                    } else {
+
+                        "${device.name} desconectada"
+                    }
+
+
+                Toast.makeText(
+                    this,
+                    message,
+                    Toast.LENGTH_SHORT
+                ).show()
+
+
+                loadDevices()
             }
-
-            Toast.makeText(
-                this,
-                message,
-                Toast.LENGTH_SHORT
-            ).show()
-
-            loadDevices()
-        }
 
 
         /* ============================= */
         /* ELIMINAR                      */
         /* ============================= */
 
-        btnDeleteDevice.setOnClickListener {
+        btnDeleteDevice
+            .setOnClickListener {
 
-            showDeleteDialog(device)
-        }
+                showDeleteDialog(
+                    device
+                )
+            }
 
 
-        containerDevices.addView(view)
+        containerDevices.addView(
+            view
+        )
     }
 
 
@@ -269,37 +448,46 @@ class DevicesActivity : AppCompatActivity() {
         device: ThermoWearDevice
     ) {
 
-        val intent = Intent(
-            this,
-            ControlDeviceActivity::class.java
-        )
+        val intent =
+            Intent(
+                this,
+                ControlDeviceActivity::class.java
+            )
+
 
         intent.putExtra(
             "DEVICE_ID",
             device.id
         )
 
+
         intent.putExtra(
             "DEVICE_NAME",
             device.name
         )
+
 
         intent.putExtra(
             "DEVICE_VERSION",
             device.version.name
         )
 
+
         intent.putExtra(
             "DEVICE_BATTERY",
             device.battery
         )
+
 
         intent.putExtra(
             "DEVICE_CONNECTED",
             device.connected
         )
 
-        startActivity(intent)
+
+        startActivity(
+            intent
+        )
     }
 
 
@@ -311,8 +499,12 @@ class DevicesActivity : AppCompatActivity() {
         device: ThermoWearDevice
     ) {
 
-        AlertDialog.Builder(this)
-            .setTitle("Eliminar dispositivo")
+        AlertDialog.Builder(
+            this
+        )
+            .setTitle(
+                "Eliminar dispositivo"
+            )
             .setMessage(
                 "¿Deseas eliminar ${device.name} de ThermoWear?"
             )
@@ -322,18 +514,24 @@ class DevicesActivity : AppCompatActivity() {
             )
             .setPositiveButton(
                 "Eliminar"
-            ) { _, _ ->
+            ) {
+                    _,
+                    _ ->
 
-                DeviceManager.removeDevice(
-                    this,
-                    device.id
-                )
+
+                DeviceManager
+                    .removeDevice(
+                        this,
+                        device.id
+                    )
+
 
                 Toast.makeText(
                     this,
                     "Dispositivo eliminado",
                     Toast.LENGTH_SHORT
                 ).show()
+
 
                 loadDevices()
             }
@@ -352,6 +550,7 @@ class DevicesActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             startActivity(
+
                 Intent(
                     this,
                     HistoryActivity::class.java
@@ -365,6 +564,7 @@ class DevicesActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             startActivity(
+
                 Intent(
                     this,
                     AlertsActivity::class.java
@@ -378,6 +578,7 @@ class DevicesActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             startActivity(
+
                 Intent(
                     this,
                     SettingsActivity::class.java
@@ -393,28 +594,68 @@ class DevicesActivity : AppCompatActivity() {
 
     private fun configureBottomNavigation() {
 
-        val bgNavHome = findViewById<LinearLayout>(
-            R.id.bgNavHome
-        )
+        val bgNavHome =
+            findViewById<LinearLayout>(
+                R.id.bgNavHome
+            )
 
-        val iconNavHome = findViewById<ImageView>(
-            R.id.iconNavHome
-        )
 
-        val txtNavHome = findViewById<TextView>(
-            R.id.txtNavHome
-        )
+        val iconNavHome =
+            findViewById<ImageView>(
+                R.id.iconNavHome
+            )
+
+
+        val txtNavHome =
+            findViewById<TextView>(
+                R.id.txtNavHome
+            )
+
 
         bgNavHome.setBackgroundResource(
             R.drawable.bg_nav_selected
         )
 
+
         iconNavHome.setColorFilter(
-            getColor(R.color.tw_text)
+            getColor(
+                R.color.tw_text
+            )
         )
 
+
         txtNavHome.setTextColor(
-            getColor(R.color.tw_text)
+            getColor(
+                R.color.tw_text
+            )
         )
+    }
+
+
+    /* ============================= */
+    /* PUNTO ROJO DE ALERTAS         */
+    /* ============================= */
+
+    private fun updateAlertIndicator() {
+
+        val alertDot =
+            findViewById<View>(
+                R.id.alertDot
+            )
+
+
+        alertDot.visibility =
+            if (
+                AlertManager.hasUnreadAlerts(
+                    this
+                )
+            ) {
+
+                View.VISIBLE
+
+            } else {
+
+                View.GONE
+            }
     }
 }
