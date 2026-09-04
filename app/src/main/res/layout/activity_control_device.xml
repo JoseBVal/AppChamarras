@@ -45,7 +45,7 @@
                 android:id="@+id/txtDeviceName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ThermoWear"
+                android:text="Chamarra Forge V2"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/tw_text"/>
@@ -54,7 +54,7 @@
                 android:id="@+id/txtDeviceStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="● Conectado · 🔋 85%"
+                android:text="● Conectado"
                 android:textSize="12sp"
                 android:textColor="@color/tw_green"/>
 
@@ -104,7 +104,7 @@
                 android:id="@+id/txtDeviceVersion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ThermoWear V2"
+                android:text="Forge V2 · 2 zonas"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:textColor="@color/tw_primary"/>
@@ -119,6 +119,8 @@
                 android:layout_height="330dp"
                 android:layout_marginTop="12dp">
 
+                <!-- IMAGEN BASE -->
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -129,6 +131,7 @@
                     app:cardBackgroundColor="#F9F8FD">
 
                     <ImageView
+                        android:id="@+id/imgJacket"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="38dp"
@@ -139,7 +142,40 @@
                 </com.google.android.material.card.MaterialCardView>
 
 
-                <!-- ZONA PRINCIPAL -->
+                <!-- MAPA DE CALOR V1 -->
+                <View
+                    android:id="@+id/heatBack"
+                    android:layout_width="128dp"
+                    android:layout_height="138dp"
+                    android:layout_gravity="center"
+                    android:translationY="8dp"
+                    android:background="@drawable/bg_heat_zone"
+                    android:visibility="gone"/>
+
+                <!-- MAPA DE CALOR V2 ALTA -->
+                <View
+                    android:id="@+id/heatUpperBack"
+                    android:layout_width="118dp"
+                    android:layout_height="82dp"
+                    android:layout_gravity="center"
+                    android:translationY="-50dp"
+                    android:background="@drawable/bg_heat_zone"
+                    android:visibility="gone"/>
+
+                <!-- MAPA DE CALOR V2 BAJA -->
+                <View
+                    android:id="@+id/heatLowerBack"
+                    android:layout_width="118dp"
+                    android:layout_height="82dp"
+                    android:layout_gravity="center"
+                    android:translationY="44dp"
+                    android:background="@drawable/bg_heat_zone"
+                    android:visibility="gone"/>
+
+
+                <!-- ========================= -->
+                <!-- ZONA PRINCIPAL            -->
+                <!-- ========================= -->
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardZonePrimary"
@@ -188,7 +224,9 @@
                 </com.google.android.material.card.MaterialCardView>
 
 
-                <!-- ZONA SECUNDARIA -->
+                <!-- ========================= -->
+                <!-- ZONA SECUNDARIA           -->
+                <!-- ========================= -->
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardZoneSecondary"
@@ -259,8 +297,6 @@
                     android:padding="24dp">
 
 
-                    <!-- ZONA SELECCIONADA -->
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -279,7 +315,7 @@
                         android:textColor="@color/tw_text"/>
 
 
-                    <!-- TEMPERATURA REAL -->
+                    <!-- TEMPERATURA -->
 
                     <LinearLayout
                         android:id="@+id/containerTemperature"
@@ -337,8 +373,6 @@
                     </LinearLayout>
 
 
-                    <!-- SLIDER -->
-
                     <com.google.android.material.slider.Slider
                         android:id="@+id/sliderIntensity"
                         android:layout_width="match_parent"
@@ -388,8 +422,6 @@
                     </LinearLayout>
 
 
-                    <!-- APLICAR INTENSIDAD -->
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnApplyIntensity"
                         android:layout_width="match_parent"
@@ -402,8 +434,6 @@
                         app:backgroundTint="@color/tw_primary"
                         app:cornerRadius="16dp"/>
 
-
-                    <!-- ESTADO -->
 
                     <TextView
                         android:id="@+id/txtZoneStatus"
@@ -464,8 +494,6 @@
                         android:textColor="@color/tw_text_secondary"/>
 
 
-                    <!-- ENCENDER / APAGAR ZONA -->
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnZonePower"
                         android:layout_width="match_parent"
@@ -480,8 +508,6 @@
                         app:backgroundTint="@color/tw_primary"
                         app:cornerRadius="18dp"/>
 
-
-                    <!-- ENCENDER / APAGAR TODAS -->
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAllZonesPower"
