@@ -128,6 +128,7 @@ class HistoryActivity : AppCompatActivity() {
         updateAlertIndicator()
     }
 
+
     private fun bindViews() {
 
         txtSelectedDevice =
@@ -259,7 +260,7 @@ class HistoryActivity : AppCompatActivity() {
 
 
         txtSelectedDeviceDetails.text =
-            "Añade un ThermoWear desde Inicio"
+            "Añade una chamarra Forge desde Inicio"
 
 
         emptyDevicesState.visibility =
@@ -346,7 +347,7 @@ class HistoryActivity : AppCompatActivity() {
                 0,
                 index,
                 index,
-                "${device.name} • $version"
+                "Chamarra Forge $version"
             )
         }
 
@@ -452,8 +453,19 @@ class HistoryActivity : AppCompatActivity() {
                 ?: return
 
 
+        val version =
+            when (device.version) {
+
+                ThermoWearVersion.V1 ->
+                    "V1"
+
+                ThermoWearVersion.V2 ->
+                    "V2"
+            }
+
+
         txtSelectedDevice.text =
-            device.name
+            "Chamarra Forge $version"
 
 
         txtSelectedDeviceDetails.text =
@@ -461,11 +473,11 @@ class HistoryActivity : AppCompatActivity() {
 
                 ThermoWearVersion.V1 ->
 
-                    "ThermoWear V1 • 1 zona"
+                    "Forge V1 • 1 zona"
 
                 ThermoWearVersion.V2 ->
 
-                    "ThermoWear V2 • 2 zonas"
+                    "Forge V2 • 2 zonas"
             }
     }
 
@@ -1134,15 +1146,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Muestra el resumen de una zona
-     * dentro de una sesión.
-     *
-     * Por ejemplo:
-     *
-     * Espalda alta • 20 min
-     * Bajo 1m · Medio 17m · Alto 2m
-     */
     private fun addZoneUsageToSession(
         container: LinearLayout,
         usage: HistoryZoneUsage
@@ -1243,24 +1246,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Agrupa todos los cambios realizados
-     * durante esa sesión.
-     *
-     * Si el usuario hizo:
-     *
-     * Bajo 1 min
-     * Medio 1 min
-     * Alto 1 min
-     * Medio 1 min
-     *
-     * veremos:
-     *
-     * Bajo 1 min · Medio 2 min · Alto 1 min
-     *
-     * pero los cuatro periodos originales
-     * siguen almacenados en JSON.
-     */
     private fun buildIntensitySummary(
         periods: List<IntensityPeriod>
     ): String {
@@ -1335,15 +1320,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Tiempo lógico acumulado de una zona.
-     *
-     * V2:
-     *
-     * Si las dos zonas estuvieron activadas
-     * durante 20 minutos, cada una puede
-     * devolver 20 minutos.
-     */
     private fun getTotalZoneDuration(
         sessions: List<HistorySession>,
         zone: ThermoWearZone
@@ -1362,10 +1338,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Determina qué intensidad acumuló
-     * más tiempo para esa zona.
-     */
     private fun getMostUsedIntensity(
         sessions: List<HistorySession>,
         zone: ThermoWearZone
@@ -1425,14 +1397,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Formato más detallado para periodos
-     * cortos.
-     *
-     * Así, cuando más adelante registremos
-     * cambios de pocos segundos, no aparecerán
-     * falsamente como "0 min".
-     */
     private fun formatDuration(
         millis: Long
     ): String {
@@ -1534,8 +1498,12 @@ class HistoryActivity : AppCompatActivity() {
 
 
     override fun finish() {
+
         super.finish()
-        ScreenTransitions.closeFade(this)
+
+        ScreenTransitions.closeFade(
+            this
+        )
     }
 
 
@@ -1647,6 +1615,8 @@ class HistoryActivity : AppCompatActivity() {
             )
         )
     }
+
+
     private fun updateAlertIndicator() {
 
         val alertDot =
@@ -1654,14 +1624,18 @@ class HistoryActivity : AppCompatActivity() {
                 R.id.alertDot
             )
 
+
         alertDot.visibility =
             if (
                 AlertManager.hasUnreadAlerts(
                     this
                 )
             ) {
+
                 View.VISIBLE
+
             } else {
+
                 View.GONE
             }
     }

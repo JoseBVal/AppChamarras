@@ -9,6 +9,7 @@ import com.example.thermowear.model.ThermoWearVersion
 import com.example.thermowear.model.ThermoWearZone
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Calendar
 import java.util.UUID
 
 
@@ -20,9 +21,31 @@ object HistoryManager {
     private const val KEY_HISTORY =
         "history_sessions"
 
+    /*
+     * Se conserva por compatibilidad
+     * con la beta anterior.
+     */
     private const val KEY_DEMO_CREATED =
         "demo_history_created"
 
+
+    /*
+     * Versión de los datos de demostración.
+     *
+     * Esto permite actualizar los datos demo
+     * sin pedir al usuario borrar manualmente
+     * SharedPreferences.
+     */
+    private const val KEY_DEMO_VERSION =
+        "demo_history_version"
+
+    private const val DEMO_DATA_VERSION =
+        2
+
+
+    /* ============================= */
+    /* OBTENER SESIONES              */
+    /* ============================= */
 
     fun getSessions(
         context: Context
@@ -33,6 +56,7 @@ object HistoryManager {
                 PREFS_NAME,
                 Context.MODE_PRIVATE
             )
+
 
         val json =
             preferences.getString(
@@ -48,13 +72,19 @@ object HistoryManager {
         try {
 
             val array =
-                JSONArray(json)
+                JSONArray(
+                    json
+                )
 
 
-            for (i in 0 until array.length()) {
+            for (
+            i in 0 until array.length()
+            ) {
 
                 val item =
-                    array.getJSONObject(i)
+                    array.getJSONObject(
+                        i
+                    )
 
 
                 val sessionStart =
@@ -84,7 +114,9 @@ object HistoryManager {
                 ) {
 
                     val zoneItem =
-                        zonesArray.getJSONObject(j)
+                        zonesArray.getJSONObject(
+                            j
+                        )
 
 
                     val periods =
@@ -92,10 +124,7 @@ object HistoryManager {
 
 
                     /*
-                     * FORMATO NUEVO
-                     *
-                     * Cada cambio de intensidad
-                     * tiene su propio periodo.
+                     * FORMATO ACTUAL
                      */
                     if (
                         zoneItem.has(
@@ -114,8 +143,9 @@ object HistoryManager {
                         ) {
 
                             val periodItem =
-                                periodsArray
-                                    .getJSONObject(k)
+                                periodsArray.getJSONObject(
+                                    k
+                                )
 
 
                             periods.add(
@@ -141,18 +171,17 @@ object HistoryManager {
                         }
 
                     } else if (
-                        zoneItem.has("intensity") &&
+                        zoneItem.has(
+                            "intensity"
+                        ) &&
                         zoneItem.has(
                             "activeDurationMillis"
                         )
                     ) {
 
                         /*
-                         * Compatibilidad con el modelo
-                         * anterior que hicimos.
-                         *
-                         * Si ya ejecutaste la versión vieja,
-                         * sus datos no harán fallar la app.
+                         * Compatibilidad con el formato
+                         * anterior del historial.
                          */
 
                         val duration =
@@ -163,14 +192,16 @@ object HistoryManager {
 
                         val oldEnd =
                             (
-                                    sessionStart + duration
+                                    sessionStart +
+                                            duration
                                     ).coerceAtMost(
                                     sessionEnd
                                 )
 
 
                         if (
-                            oldEnd > sessionStart
+                            oldEnd >
+                            sessionStart
                         ) {
 
                             periods.add(
@@ -239,7 +270,9 @@ object HistoryManager {
                     HistorySession(
 
                         id =
-                            item.getString("id"),
+                            item.getString(
+                                "id"
+                            ),
 
                         deviceId =
                             item.getString(
@@ -279,15 +312,22 @@ object HistoryManager {
     }
 
 
+    /* ============================= */
+    /* SESIONES POR DISPOSITIVO      */
+    /* ============================= */
+
     fun getSessionsForDevice(
         context: Context,
         deviceId: String
     ): List<HistorySession> {
 
-        return getSessions(context)
+        return getSessions(
+            context
+        )
             .filter {
 
-                it.deviceId == deviceId
+                it.deviceId ==
+                        deviceId
             }
             .sortedByDescending {
 
@@ -296,18 +336,19 @@ object HistoryManager {
     }
 
 
-    /**
-     * Más adelante Bluetooth utilizará
-     * este método para almacenar
-     * una sesión real terminada.
-     */
+    /* ============================= */
+    /* AÑADIR SESIÓN REAL            */
+    /* ============================= */
+
     fun addSession(
         context: Context,
         session: HistorySession
     ) {
 
         val sessions =
-            getSessions(context)
+            getSessions(
+                context
+            )
 
 
         sessions.add(
@@ -322,18 +363,25 @@ object HistoryManager {
     }
 
 
+    /* ============================= */
+    /* BORRAR HISTORIAL DISPOSITIVO  */
+    /* ============================= */
+
     fun removeHistoryForDevice(
         context: Context,
         deviceId: String
     ) {
 
         val sessions =
-            getSessions(context)
+            getSessions(
+                context
+            )
 
 
         sessions.removeAll {
 
-            it.deviceId == deviceId
+            it.deviceId ==
+                    deviceId
         }
 
 
@@ -343,6 +391,10 @@ object HistoryManager {
         )
     }
 
+
+    /* ============================= */
+    /* BORRAR TODO                   */
+    /* ============================= */
 
     fun clearHistory(
         context: Context
@@ -360,25 +412,26 @@ object HistoryManager {
             .remove(
                 KEY_DEMO_CREATED
             )
+            .remove(
+                KEY_DEMO_VERSION
+            )
             .apply()
     }
 
 
-    /**
-     * DATOS DE DEMOSTRACIÓN
-     *
-     * Sirven para probar Historial antes
-     * de implementar Bluetooth.
-     *
-     * Incluyen cambios reales de intensidad
-     * dentro de una misma sesión.
-     */
+    /* ============================= */
+    /* DATOS DE DEMOSTRACIÓN         */
+    /* ============================= */
+
     fun createDemoHistoryIfNeeded(
         context: Context,
         devices: List<ThermoWearDevice>
     ) {
 
-        if (devices.isEmpty()) {
+        if (
+            devices.isEmpty()
+        ) {
+
             return
         }
 
@@ -390,11 +443,20 @@ object HistoryManager {
             )
 
 
-        if (
-            preferences.getBoolean(
-                KEY_DEMO_CREATED,
-                false
+        val currentDemoVersion =
+            preferences.getInt(
+                KEY_DEMO_VERSION,
+                0
             )
+
+
+        /*
+         * Esta versión de los datos demo
+         * ya fue creada anteriormente.
+         */
+        if (
+            currentDemoVersion >=
+            DEMO_DATA_VERSION
         ) {
 
             return
@@ -402,447 +464,81 @@ object HistoryManager {
 
 
         /*
-         * Si ya existen registros,
-         * no añadimos demostraciones encima.
+         * Conservamos las sesiones existentes.
+         *
+         * Así la actualización no destruye
+         * el historial creado anteriormente.
          */
-        if (
-            getSessions(context)
-                .isNotEmpty()
-        ) {
-
-            preferences
-                .edit()
-                .putBoolean(
-                    KEY_DEMO_CREATED,
-                    true
-                )
-                .apply()
-
-            return
-        }
-
-
-        val now =
-            System.currentTimeMillis()
+        val existingSessions =
+            getSessions(
+                context
+            )
 
 
         val demoSessions =
             mutableListOf<HistorySession>()
 
 
-        devices.forEach { device ->
+        val now =
+            System.currentTimeMillis()
 
-            when (device.version) {
 
-                /*
-                 * ========================
-                 * THERMOWEAR V1
-                 * ========================
-                 */
+        devices.forEach {
+                device ->
+
+
+            when (
+                device.version
+            ) {
+
+                /* ======================== */
+                /* FORGE V1                 */
+                /* ======================== */
+
                 ThermoWearVersion.V1 -> {
 
-                    /*
-                     * Sesión de 50 minutos.
-                     *
-                     * 15 min Bajo
-                     * 25 min Medio
-                     * 10 min Alto
-                     */
+                    createV1DemoHistory(
+                        device =
+                            device,
 
-                    val start1 =
-                        now -
-                                hoursToMillis(2)
+                        now =
+                            now,
 
-
-                    val end1 =
-                        start1 +
-                                minutesToMillis(50)
-
-
-                    demoSessions.add(
-
-                        HistorySession(
-
-                            id =
-                                UUID.randomUUID()
-                                    .toString(),
-
-                            deviceId =
-                                device.id,
-
-                            version =
-                                device.version,
-
-                            startTimeMillis =
-                                start1,
-
-                            endTimeMillis =
-                                end1,
-
-                            zones =
-                                listOf(
-
-                                    HistoryZoneUsage(
-
-                                        zone =
-                                            ThermoWearZone.BACK,
-
-                                        intensityPeriods =
-                                            listOf(
-
-                                                createPeriod(
-                                                    intensity = 1,
-                                                    start = start1,
-                                                    durationMinutes = 15
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start =
-                                                        start1 +
-                                                                minutesToMillis(
-                                                                    15
-                                                                ),
-                                                    durationMinutes = 25
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 3,
-                                                    start =
-                                                        start1 +
-                                                                minutesToMillis(
-                                                                    40
-                                                                ),
-                                                    durationMinutes = 10
-                                                )
-                                            )
-                                    )
-                                )
-                        )
-                    )
-
-
-                    /*
-                     * Segunda sesión V1:
-                     * 40 minutos en intensidad Medio.
-                     */
-
-                    val start2 =
-                        now -
-                                hoursToMillis(5)
-
-
-                    val end2 =
-                        start2 +
-                                minutesToMillis(40)
-
-
-                    demoSessions.add(
-
-                        HistorySession(
-
-                            id =
-                                UUID.randomUUID()
-                                    .toString(),
-
-                            deviceId =
-                                device.id,
-
-                            version =
-                                device.version,
-
-                            startTimeMillis =
-                                start2,
-
-                            endTimeMillis =
-                                end2,
-
-                            zones =
-                                listOf(
-
-                                    HistoryZoneUsage(
-
-                                        zone =
-                                            ThermoWearZone.BACK,
-
-                                        intensityPeriods =
-                                            listOf(
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start = start2,
-                                                    durationMinutes = 40
-                                                )
-                                            )
-                                    )
-                                )
-                        )
+                        destination =
+                            demoSessions
                     )
                 }
 
 
-                /*
-                 * ========================
-                 * THERMOWEAR V2
-                 * ========================
-                 */
+                /* ======================== */
+                /* FORGE V2                 */
+                /* ======================== */
+
                 ThermoWearVersion.V2 -> {
 
-                    /*
-                     * Sesión de 55 minutos.
-                     *
-                     * AMBAS ZONAS están lógicamente
-                     * encendidas durante los 55 minutos.
-                     *
-                     * Aunque Arduino alterne físicamente:
-                     *
-                     * alta 10 s
-                     * baja 10 s
-                     * alta 10 s
-                     * baja 10 s
-                     *
-                     * para el usuario ambas estuvieron
-                     * activadas los 55 minutos.
-                     */
+                    createV2DemoHistory(
+                        device =
+                            device,
 
-                    val start1 =
-                        now -
-                                hoursToMillis(2)
+                        now =
+                            now,
 
-
-                    val end1 =
-                        start1 +
-                                minutesToMillis(55)
-
-
-                    demoSessions.add(
-
-                        HistorySession(
-
-                            id =
-                                UUID.randomUUID()
-                                    .toString(),
-
-                            deviceId =
-                                device.id,
-
-                            version =
-                                device.version,
-
-                            startTimeMillis =
-                                start1,
-
-                            endTimeMillis =
-                                end1,
-
-                            zones =
-                                listOf(
-
-                                    /*
-                                     * ESPALDA ALTA
-                                     *
-                                     * Bajo 15 min
-                                     * Medio 25 min
-                                     * Alto 15 min
-                                     */
-
-                                    HistoryZoneUsage(
-
-                                        zone =
-                                            ThermoWearZone.UPPER_BACK,
-
-                                        intensityPeriods =
-                                            listOf(
-
-                                                createPeriod(
-                                                    intensity = 1,
-                                                    start = start1,
-                                                    durationMinutes = 15
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start =
-                                                        start1 +
-                                                                minutesToMillis(
-                                                                    15
-                                                                ),
-                                                    durationMinutes = 25
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 3,
-                                                    start =
-                                                        start1 +
-                                                                minutesToMillis(
-                                                                    40
-                                                                ),
-                                                    durationMinutes = 15
-                                                )
-                                            )
-                                    ),
-
-
-                                    /*
-                                     * ESPALDA BAJA
-                                     *
-                                     * Medio 20 min
-                                     * Alto 20 min
-                                     * Medio 15 min
-                                     */
-
-                                    HistoryZoneUsage(
-
-                                        zone =
-                                            ThermoWearZone.LOWER_BACK,
-
-                                        intensityPeriods =
-                                            listOf(
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start = start1,
-                                                    durationMinutes = 20
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 3,
-                                                    start =
-                                                        start1 +
-                                                                minutesToMillis(
-                                                                    20
-                                                                ),
-                                                    durationMinutes = 20
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start =
-                                                        start1 +
-                                                                minutesToMillis(
-                                                                    40
-                                                                ),
-                                                    durationMinutes = 15
-                                                )
-                                            )
-                                    )
-                                )
-                        )
-                    )
-
-
-                    /*
-                     * Segunda sesión V2.
-                     *
-                     * La sesión dura 45 minutos.
-                     *
-                     * Espalda alta:
-                     * activa los 45 min.
-                     *
-                     * Espalda baja:
-                     * estuvo apagada los primeros 10 min,
-                     * luego activa durante 35 min.
-                     */
-
-                    val start2 =
-                        now -
-                                hoursToMillis(5)
-
-
-                    val end2 =
-                        start2 +
-                                minutesToMillis(45)
-
-
-                    demoSessions.add(
-
-                        HistorySession(
-
-                            id =
-                                UUID.randomUUID()
-                                    .toString(),
-
-                            deviceId =
-                                device.id,
-
-                            version =
-                                device.version,
-
-                            startTimeMillis =
-                                start2,
-
-                            endTimeMillis =
-                                end2,
-
-                            zones =
-                                listOf(
-
-                                    HistoryZoneUsage(
-
-                                        zone =
-                                            ThermoWearZone.UPPER_BACK,
-
-                                        intensityPeriods =
-                                            listOf(
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start = start2,
-                                                    durationMinutes = 20
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 3,
-                                                    start =
-                                                        start2 +
-                                                                minutesToMillis(
-                                                                    20
-                                                                ),
-                                                    durationMinutes = 25
-                                                )
-                                            )
-                                    ),
-
-                                    HistoryZoneUsage(
-
-                                        zone =
-                                            ThermoWearZone.LOWER_BACK,
-
-                                        intensityPeriods =
-                                            listOf(
-
-                                                createPeriod(
-                                                    intensity = 1,
-                                                    start =
-                                                        start2 +
-                                                                minutesToMillis(
-                                                                    10
-                                                                ),
-                                                    durationMinutes = 15
-                                                ),
-
-                                                createPeriod(
-                                                    intensity = 2,
-                                                    start =
-                                                        start2 +
-                                                                minutesToMillis(
-                                                                    25
-                                                                ),
-                                                    durationMinutes = 20
-                                                )
-                                            )
-                                    )
-                                )
-                        )
+                        destination =
+                            demoSessions
                     )
                 }
             }
         }
 
 
+        val allSessions =
+            existingSessions +
+                    demoSessions
+
+
         saveSessions(
             context,
-            demoSessions
+            allSessions
         )
 
 
@@ -852,14 +548,764 @@ object HistoryManager {
                 KEY_DEMO_CREATED,
                 true
             )
+            .putInt(
+                KEY_DEMO_VERSION,
+                DEMO_DATA_VERSION
+            )
             .apply()
     }
 
 
-    /**
-     * Convierte las sesiones a JSON
-     * y las guarda en SharedPreferences.
-     */
+    /* ============================= */
+    /* DEMO FORGE V1                 */
+    /* ============================= */
+
+    private fun createV1DemoHistory(
+        device: ThermoWearDevice,
+        now: Long,
+        destination:
+        MutableList<HistorySession>
+    ) {
+
+        /*
+         * HOY
+         *
+         * Sesión reciente de 35 minutos.
+         */
+
+        val todayStart1 =
+            now -
+                    minutesToMillis(
+                        55
+                    )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    todayStart1,
+
+                endTimeMillis =
+                    todayStart1 +
+                            minutesToMillis(
+                                35
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start = todayStart1,
+                                        durationMinutes = 10
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            todayStart1 +
+                                                    minutesToMillis(
+                                                        10
+                                                    ),
+                                        durationMinutes = 20
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            todayStart1 +
+                                                    minutesToMillis(
+                                                        30
+                                                    ),
+                                        durationMinutes = 5
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+
+
+        /*
+         * HOY
+         *
+         * Segunda sesión de 25 minutos.
+         */
+
+        val todayStart2 =
+            now -
+                    minutesToMillis(
+                        125
+                    )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    todayStart2,
+
+                endTimeMillis =
+                    todayStart2 +
+                            minutesToMillis(
+                                25
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start = todayStart2,
+                                        durationMinutes = 25
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+
+
+        /*
+         * AYER
+         *
+         * 50 minutos.
+         */
+
+        val yesterdayStart =
+            dayAt(
+                daysAgo = 1,
+                hour = 18,
+                minute = 20
+            )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    yesterdayStart,
+
+                endTimeMillis =
+                    yesterdayStart +
+                            minutesToMillis(
+                                50
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start = yesterdayStart,
+                                        durationMinutes = 15
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            yesterdayStart +
+                                                    minutesToMillis(
+                                                        15
+                                                    ),
+                                        durationMinutes = 25
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            yesterdayStart +
+                                                    minutesToMillis(
+                                                        40
+                                                    ),
+                                        durationMinutes = 10
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+
+
+        /*
+         * HACE DOS DÍAS
+         */
+
+        val twoDaysAgoStart =
+            dayAt(
+                daysAgo = 2,
+                hour = 16,
+                minute = 40
+            )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    twoDaysAgoStart,
+
+                endTimeMillis =
+                    twoDaysAgoStart +
+                            minutesToMillis(
+                                40
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start = twoDaysAgoStart,
+                                        durationMinutes = 30
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            twoDaysAgoStart +
+                                                    minutesToMillis(
+                                                        30
+                                                    ),
+                                        durationMinutes = 10
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+    }
+
+
+    /* ============================= */
+    /* DEMO FORGE V2                 */
+    /* ============================= */
+
+    private fun createV2DemoHistory(
+        device: ThermoWearDevice,
+        now: Long,
+        destination:
+        MutableList<HistorySession>
+    ) {
+
+        /*
+         * HOY
+         *
+         * Ambas zonas estuvieron activadas
+         * lógicamente durante 40 minutos.
+         */
+
+        val todayStart1 =
+            now -
+                    minutesToMillis(
+                        60
+                    )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    todayStart1,
+
+                endTimeMillis =
+                    todayStart1 +
+                            minutesToMillis(
+                                40
+                            ),
+
+                zones =
+                    listOf(
+
+                        /*
+                         * ESPALDA ALTA
+                         */
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.UPPER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start = todayStart1,
+                                        durationMinutes = 10
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            todayStart1 +
+                                                    minutesToMillis(
+                                                        10
+                                                    ),
+                                        durationMinutes = 20
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            todayStart1 +
+                                                    minutesToMillis(
+                                                        30
+                                                    ),
+                                        durationMinutes = 10
+                                    )
+                                )
+                        ),
+
+
+                        /*
+                         * ESPALDA BAJA
+                         */
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.LOWER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start = todayStart1,
+                                        durationMinutes = 25
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            todayStart1 +
+                                                    minutesToMillis(
+                                                        25
+                                                    ),
+                                        durationMinutes = 15
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+
+
+        /*
+         * HOY
+         *
+         * Segunda sesión.
+         *
+         * Espalda alta: 35 min.
+         * Espalda baja: activa solamente 20 min.
+         */
+
+        val todayStart2 =
+            now -
+                    minutesToMillis(
+                        145
+                    )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    todayStart2,
+
+                endTimeMillis =
+                    todayStart2 +
+                            minutesToMillis(
+                                35
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.UPPER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start = todayStart2,
+                                        durationMinutes = 20
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            todayStart2 +
+                                                    minutesToMillis(
+                                                        20
+                                                    ),
+                                        durationMinutes = 15
+                                    )
+                                )
+                        ),
+
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.LOWER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start =
+                                            todayStart2 +
+                                                    minutesToMillis(
+                                                        15
+                                                    ),
+                                        durationMinutes = 10
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            todayStart2 +
+                                                    minutesToMillis(
+                                                        25
+                                                    ),
+                                        durationMinutes = 10
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+
+
+        /*
+         * AYER
+         *
+         * Ambas zonas activas 55 minutos.
+         */
+
+        val yesterdayStart =
+            dayAt(
+                daysAgo = 1,
+                hour = 19,
+                minute = 10
+            )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    yesterdayStart,
+
+                endTimeMillis =
+                    yesterdayStart +
+                            minutesToMillis(
+                                55
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.UPPER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start = yesterdayStart,
+                                        durationMinutes = 15
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            yesterdayStart +
+                                                    minutesToMillis(
+                                                        15
+                                                    ),
+                                        durationMinutes = 25
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            yesterdayStart +
+                                                    minutesToMillis(
+                                                        40
+                                                    ),
+                                        durationMinutes = 15
+                                    )
+                                )
+                        ),
+
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.LOWER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start = yesterdayStart,
+                                        durationMinutes = 20
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 3,
+                                        start =
+                                            yesterdayStart +
+                                                    minutesToMillis(
+                                                        20
+                                                    ),
+                                        durationMinutes = 20
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            yesterdayStart +
+                                                    minutesToMillis(
+                                                        40
+                                                    ),
+                                        durationMinutes = 15
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+
+
+        /*
+         * HACE DOS DÍAS
+         *
+         * Uso más ligero.
+         */
+
+        val twoDaysAgoStart =
+            dayAt(
+                daysAgo = 2,
+                hour = 17,
+                minute = 25
+            )
+
+
+        destination.add(
+
+            HistorySession(
+
+                id =
+                    UUID.randomUUID()
+                        .toString(),
+
+                deviceId =
+                    device.id,
+
+                version =
+                    device.version,
+
+                startTimeMillis =
+                    twoDaysAgoStart,
+
+                endTimeMillis =
+                    twoDaysAgoStart +
+                            minutesToMillis(
+                                45
+                            ),
+
+                zones =
+                    listOf(
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.UPPER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start = twoDaysAgoStart,
+                                        durationMinutes = 15
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            twoDaysAgoStart +
+                                                    minutesToMillis(
+                                                        15
+                                                    ),
+                                        durationMinutes = 30
+                                    )
+                                )
+                        ),
+
+
+                        HistoryZoneUsage(
+
+                            zone =
+                                ThermoWearZone.LOWER_BACK,
+
+                            intensityPeriods =
+                                listOf(
+
+                                    createPeriod(
+                                        intensity = 1,
+                                        start =
+                                            twoDaysAgoStart +
+                                                    minutesToMillis(
+                                                        10
+                                                    ),
+                                        durationMinutes = 20
+                                    ),
+
+                                    createPeriod(
+                                        intensity = 2,
+                                        start =
+                                            twoDaysAgoStart +
+                                                    minutesToMillis(
+                                                        30
+                                                    ),
+                                        durationMinutes = 15
+                                    )
+                                )
+                        )
+                    )
+            )
+        )
+    }
+
+
+    /* ============================= */
+    /* GUARDAR JSON                  */
+    /* ============================= */
+
     private fun saveSessions(
         context: Context,
         sessions: List<HistorySession>
@@ -869,121 +1315,136 @@ object HistoryManager {
             JSONArray()
 
 
-        sessions.forEach { session ->
-
-            val sessionItem =
-                JSONObject()
-
-
-            sessionItem.put(
-                "id",
-                session.id
-            )
-
-            sessionItem.put(
-                "deviceId",
-                session.deviceId
-            )
-
-            sessionItem.put(
-                "version",
-                session.version.name
-            )
-
-            sessionItem.put(
-                "startTimeMillis",
-                session.startTimeMillis
-            )
-
-            sessionItem.put(
-                "endTimeMillis",
-                session.endTimeMillis
-            )
+        sessions
+            .sortedByDescending {
+                it.startTimeMillis
+            }
+            .forEach {
+                    session ->
 
 
-            val zonesArray =
-                JSONArray()
-
-
-            session.zones.forEach { zone ->
-
-                val zoneItem =
+                val sessionItem =
                     JSONObject()
 
 
-                zoneItem.put(
-                    "zone",
-                    zone.zone.name
+                sessionItem.put(
+                    "id",
+                    session.id
                 )
 
 
-                val periodsArray =
+                sessionItem.put(
+                    "deviceId",
+                    session.deviceId
+                )
+
+
+                sessionItem.put(
+                    "version",
+                    session.version.name
+                )
+
+
+                sessionItem.put(
+                    "startTimeMillis",
+                    session.startTimeMillis
+                )
+
+
+                sessionItem.put(
+                    "endTimeMillis",
+                    session.endTimeMillis
+                )
+
+
+                val zonesArray =
                     JSONArray()
 
 
-                zone.intensityPeriods.forEach {
-                        period ->
+                session.zones.forEach {
+                        zone ->
 
 
-                    val periodItem =
+                    val zoneItem =
                         JSONObject()
 
 
-                    periodItem.put(
-                        "intensity",
-                        period.intensity
-                    )
-
-                    periodItem.put(
-                        "startTimeMillis",
-                        period.startTimeMillis
-                    )
-
-                    periodItem.put(
-                        "endTimeMillis",
-                        period.endTimeMillis
+                    zoneItem.put(
+                        "zone",
+                        zone.zone.name
                     )
 
 
-                    periodsArray.put(
-                        periodItem
-                    )
-                }
+                    val periodsArray =
+                        JSONArray()
 
 
-                zoneItem.put(
-                    "intensityPeriods",
-                    periodsArray
-                )
+                    zone.intensityPeriods.forEach {
+                            period ->
 
 
-                if (
-                    zone.averageTemperatureC != null
-                ) {
+                        val periodItem =
+                            JSONObject()
+
+
+                        periodItem.put(
+                            "intensity",
+                            period.intensity
+                        )
+
+
+                        periodItem.put(
+                            "startTimeMillis",
+                            period.startTimeMillis
+                        )
+
+
+                        periodItem.put(
+                            "endTimeMillis",
+                            period.endTimeMillis
+                        )
+
+
+                        periodsArray.put(
+                            periodItem
+                        )
+                    }
+
 
                     zoneItem.put(
-                        "averageTemperatureC",
-                        zone.averageTemperatureC
+                        "intensityPeriods",
+                        periodsArray
+                    )
+
+
+                    if (
+                        zone.averageTemperatureC !=
+                        null
+                    ) {
+
+                        zoneItem.put(
+                            "averageTemperatureC",
+                            zone.averageTemperatureC
+                        )
+                    }
+
+
+                    zonesArray.put(
+                        zoneItem
                     )
                 }
 
 
-                zonesArray.put(
-                    zoneItem
+                sessionItem.put(
+                    "zones",
+                    zonesArray
+                )
+
+
+                sessionsArray.put(
+                    sessionItem
                 )
             }
-
-
-            sessionItem.put(
-                "zones",
-                zonesArray
-            )
-
-
-            sessionsArray.put(
-                sessionItem
-            )
-        }
 
 
         context
@@ -999,6 +1460,10 @@ object HistoryManager {
             .apply()
     }
 
+
+    /* ============================= */
+    /* CREAR PERIODO                 */
+    /* ============================= */
 
     private fun createPeriod(
         intensity: Int,
@@ -1023,22 +1488,63 @@ object HistoryManager {
     }
 
 
+    /* ============================= */
+    /* FECHA DE DÍAS ANTERIORES      */
+    /* ============================= */
+
+    private fun dayAt(
+        daysAgo: Int,
+        hour: Int,
+        minute: Int
+    ): Long {
+
+        val calendar =
+            Calendar.getInstance()
+
+
+        calendar.add(
+            Calendar.DAY_OF_YEAR,
+            -daysAgo
+        )
+
+
+        calendar.set(
+            Calendar.HOUR_OF_DAY,
+            hour
+        )
+
+
+        calendar.set(
+            Calendar.MINUTE,
+            minute
+        )
+
+
+        calendar.set(
+            Calendar.SECOND,
+            0
+        )
+
+
+        calendar.set(
+            Calendar.MILLISECOND,
+            0
+        )
+
+
+        return calendar.timeInMillis
+    }
+
+
+    /* ============================= */
+    /* CONVERSIONES                  */
+    /* ============================= */
+
     private fun minutesToMillis(
         minutes: Int
     ): Long {
 
         return minutes *
-                60L *
-                1000L
-    }
-
-
-    private fun hoursToMillis(
-        hours: Int
-    ): Long {
-
-        return hours *
-                60L *
                 60L *
                 1000L
     }
