@@ -215,11 +215,8 @@ object AlertManager {
 
 
         /*
-         * Para esta versión no necesitamos
-         * conservar cientos de alertas.
-         *
-         * Guardamos como máximo las 50
-         * más recientes.
+         * Guardamos como máximo las
+         * 50 alertas más recientes.
          */
         val limitedAlerts =
             alerts

@@ -15,6 +15,7 @@ import com.example.thermowear.data.AlertManager
 import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.model.AlertType
 import com.example.thermowear.model.ThermoWearAlert
+import com.example.thermowear.model.ThermoWearDevice
 import com.example.thermowear.model.ThermoWearVersion
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.history.HistoryActivity
@@ -570,8 +571,18 @@ class AlertsActivity : AppCompatActivity() {
 
 
         val deviceName =
-            device?.name
-                ?: "ThermoWear"
+            if (
+                device != null
+            ) {
+
+                getForgeDeviceName(
+                    device
+                )
+
+            } else {
+
+                "Chamarra Forge"
+            }
 
 
         AlertManager
@@ -621,7 +632,7 @@ class AlertsActivity : AppCompatActivity() {
 
             Toast.makeText(
                 this,
-                "Añade un ThermoWear V2 para probar esta alerta.",
+                "Añade una chamarra Forge V2 para probar esta alerta.",
                 Toast.LENGTH_LONG
             ).show()
 
@@ -635,7 +646,7 @@ class AlertsActivity : AppCompatActivity() {
          * demostrar visualmente el evento.
          *
          * Cuando integremos el sensor real,
-         * este valor vendrá del Arduino.
+         * este valor llegará desde el ESP32.
          */
         AlertManager
             .addHighTemperatureAlert(
@@ -647,7 +658,9 @@ class AlertsActivity : AppCompatActivity() {
                     device.id,
 
                 deviceName =
-                    device.name,
+                    getForgeDeviceName(
+                        device
+                    ),
 
                 temperatureC =
                     42
@@ -664,6 +677,27 @@ class AlertsActivity : AppCompatActivity() {
         updateAlertIndicator()
 
         renderAlerts()
+    }
+
+
+    /* ============================ */
+    /* NOMBRE VISUAL FORGE          */
+    /* ============================ */
+
+    private fun getForgeDeviceName(
+        device: ThermoWearDevice
+    ): String {
+
+        return when (
+            device.version
+        ) {
+
+            ThermoWearVersion.V1 ->
+                "Chamarra Forge V1"
+
+            ThermoWearVersion.V2 ->
+                "Chamarra Forge V2"
+        }
     }
 
 
@@ -875,8 +909,12 @@ class AlertsActivity : AppCompatActivity() {
 
 
     override fun finish() {
+
         super.finish()
-        ScreenTransitions.closeFade(this)
+
+        ScreenTransitions.closeFade(
+            this
+        )
     }
 
 

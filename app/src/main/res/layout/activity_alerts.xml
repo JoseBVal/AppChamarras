@@ -61,7 +61,7 @@
             android:paddingBottom="32dp">
 
 
-            <!-- TITULO -->
+            <!-- TÍTULO -->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Eventos importantes de tus dispositivos ThermoWear"
+                android:text="Eventos importantes de tus chamarras Forge"
                 android:textSize="14sp"
                 android:textColor="@color/tw_text_secondary"/>
 
@@ -99,6 +99,7 @@
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:src="@drawable/ic_notifications"
+                    android:contentDescription="Sin alertas"
                     app:tint="@color/tw_text_light"/>
 
                 <TextView
@@ -185,7 +186,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="Mientras se integra el hardware real puedes probar las alertas de ThermoWear."
+                        android:text="Mientras se integra el hardware real puedes probar las alertas de las chamarras Forge."
                         android:textColor="@color/tw_text_secondary"
                         android:textSize="12sp"/>
 
@@ -207,7 +208,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginTop="10dp"
-                        android:text="Probar temperatura V2"
+                        android:text="Probar temperatura Forge V2"
                         android:textAllCaps="false"
                         android:textColor="@color/tw_primary"
                         app:backgroundTint="@color/white"
