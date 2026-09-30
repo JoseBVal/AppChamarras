@@ -45,6 +45,25 @@ object NotificationHelper {
         "thermowear_alerts_silent"
 
 
+    fun cancelAlertNotifications(context: Context) {
+        val manager =
+            context.getSystemService(NotificationManager::class.java)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.activeNotifications
+                .filter { statusBarNotification ->
+                    statusBarNotification.notification.channelId
+                        ?.startsWith("thermowear_alerts_") == true
+                }
+                .forEach { statusBarNotification ->
+                    manager.cancel(statusBarNotification.tag, statusBarNotification.id)
+                }
+        } else {
+            manager.cancelAll()
+        }
+    }
+
+
     fun createNotificationChannel(
         context: Context
     ) {

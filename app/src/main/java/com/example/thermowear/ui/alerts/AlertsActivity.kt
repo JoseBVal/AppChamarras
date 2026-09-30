@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
 import com.example.thermowear.data.AlertManager
 import com.example.thermowear.data.DeviceManager
@@ -20,6 +19,7 @@ import com.example.thermowear.model.ThermoWearVersion
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.history.HistoryActivity
 import com.example.thermowear.ui.settings.SettingsActivity
+import com.example.thermowear.ui.ThermoWearActivity
 import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class AlertsActivity : AppCompatActivity() {
+class AlertsActivity : ThermoWearActivity() {
+
+    override val isNavigationMenu = true
 
     private lateinit var alertsContainer:
             LinearLayout
@@ -51,6 +53,8 @@ class AlertsActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_alerts
         )
+
+        com.example.thermowear.util.WindowInsetsHelper.apply(this)
 
 
         bindViews()
@@ -876,7 +880,7 @@ class AlertsActivity : AppCompatActivity() {
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
 
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 intent
             )
@@ -885,7 +889,7 @@ class AlertsActivity : AppCompatActivity() {
 
         navHistory.setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,
@@ -897,7 +901,7 @@ class AlertsActivity : AppCompatActivity() {
 
         navSettings.setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,

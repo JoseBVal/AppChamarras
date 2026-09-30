@@ -8,58 +8,112 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
+import com.example.thermowear.bluetooth.BleManager
+import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.util.ScreenTransitions
+import com.example.thermowear.ui.ThermoWearActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
+import java.util.Locale
 
-class ControlDeviceActivity : AppCompatActivity() {
 
-    private lateinit var txtDeviceName: TextView
-    private lateinit var txtDeviceStatus: TextView
-    private lateinit var txtDeviceVersion: TextView
+class ControlDeviceActivity :
+    ThermoWearActivity(),
+    BleManager.Listener {
 
-    private lateinit var cardZonePrimary: MaterialCardView
-    private lateinit var cardZoneSecondary: MaterialCardView
 
-    private lateinit var txtPrimaryZoneName: TextView
-    private lateinit var txtPrimaryZoneInfo: TextView
+    private lateinit var txtDeviceName:
+            TextView
 
-    private lateinit var txtSecondaryZoneName: TextView
-    private lateinit var txtSecondaryZoneInfo: TextView
+    private lateinit var txtDeviceStatus:
+            TextView
 
-    private lateinit var txtSelectedZone: TextView
+    private lateinit var txtDeviceVersion:
+            TextView
 
-    private lateinit var containerTemperature: LinearLayout
-    private lateinit var txtCurrentTemperature: TextView
 
-    private lateinit var txtHeatLevel: TextView
-    private lateinit var txtZoneStatus: TextView
+    private lateinit var cardZonePrimary:
+            MaterialCardView
 
-    private lateinit var sliderIntensity: Slider
+    private lateinit var cardZoneSecondary:
+            MaterialCardView
 
-    private lateinit var btnApplyIntensity: MaterialButton
-    private lateinit var btnZonePower: MaterialButton
-    private lateinit var btnAllZonesPower: MaterialButton
 
-    /*
-     * Representación visual del calor.
-     */
-    private lateinit var heatBack: View
-    private lateinit var heatUpperBack: View
-    private lateinit var heatLowerBack: View
+    private lateinit var txtPrimaryZoneName:
+            TextView
+
+    private lateinit var txtPrimaryZoneInfo:
+            TextView
+
+    private lateinit var txtSecondaryZoneName:
+            TextView
+
+    private lateinit var txtSecondaryZoneInfo:
+            TextView
+
+
+    private lateinit var txtSelectedZone:
+            TextView
+
+
+    private lateinit var containerTemperature:
+            LinearLayout
+
+    private lateinit var txtCurrentTemperature:
+            TextView
+
+    private var currentTemperatureLabel =
+        "-- °C"
+
+
+    private lateinit var txtHeatLevel:
+            TextView
+
+    private lateinit var txtZoneStatus:
+            TextView
+
+
+    private lateinit var sliderIntensity:
+            Slider
+
+
+    private lateinit var btnApplyIntensity:
+            MaterialButton
+
+    private lateinit var btnZonePower:
+            MaterialButton
+
+    private lateinit var btnAllZonesPower:
+            MaterialButton
+
+
+    private lateinit var heatBack:
+            View
+
+    private lateinit var heatUpperBack:
+            View
+
+    private lateinit var heatLowerBack:
+            View
 
 
     /* ============================= */
-    /* DATOS DEL DISPOSITIVO         */
+    /* DISPOSITIVO                   */
     /* ============================= */
 
-    private var deviceId: String = ""
-    private var deviceName: String = "Chamarra Forge"
-    private var deviceVersion: String = "V1"
-    private var deviceConnected: Boolean = false
+    private var deviceId =
+        ""
+
+    private var deviceName =
+        "Chamarra Forge"
+
+    private var deviceVersion =
+        "V1"
+
+    private var deviceConnected =
+        false
 
 
     /* ============================= */
@@ -67,17 +121,21 @@ class ControlDeviceActivity : AppCompatActivity() {
     /* ============================= */
 
     private enum class Zone {
+
         BACK,
+
         UPPER_BACK,
+
         LOWER_BACK
     }
 
-    private var selectedZone: Zone =
+
+    private var selectedZone =
         Zone.BACK
 
 
     /* ============================= */
-    /* ESTADO DE ENCENDIDO           */
+    /* ESTADOS                       */
     /* ============================= */
 
     private var backEnabled =
@@ -91,7 +149,7 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* INTENSIDAD APLICADA           */
+    /* INTENSIDADES                  */
     /* ============================= */
 
     private var backIntensity =
@@ -104,16 +162,12 @@ class ControlDeviceActivity : AppCompatActivity() {
         2
 
 
-    /* ============================= */
-    /* INTENSIDAD SELECCIONADA       */
-    /* ============================= */
-
     private var pendingIntensity =
         2
 
 
     /* ============================= */
-    /* CICLO DE VIDA                 */
+    /* ON CREATE                     */
     /* ============================= */
 
     override fun onCreate(
@@ -128,6 +182,8 @@ class ControlDeviceActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_control_device
         )
+
+        com.example.thermowear.util.WindowInsetsHelper.apply(this)
 
 
         getDeviceData()
@@ -149,21 +205,41 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* TRANSICIÓN AL VOLVER          */
+    /* ON RESUME                     */
     /* ============================= */
 
-    override fun finish() {
+    override fun onResume() {
 
-        super.finish()
+        super.onResume()
 
-        ScreenTransitions.closeSlide(
+
+        BleManager.listener =
             this
-        )
     }
 
 
     /* ============================= */
-    /* OBTENER DATOS                 */
+    /* ON PAUSE                      */
+    /* ============================= */
+
+    override fun onPause() {
+
+        if (
+            BleManager.listener ===
+            this
+        ) {
+
+            BleManager.listener =
+                null
+        }
+
+
+        super.onPause()
+    }
+
+
+    /* ============================= */
+    /* DATOS                         */
     /* ============================= */
 
     private fun getDeviceData() {
@@ -205,10 +281,12 @@ class ControlDeviceActivity : AppCompatActivity() {
                 R.id.txtDeviceName
             )
 
+
         txtDeviceStatus =
             findViewById(
                 R.id.txtDeviceStatus
             )
+
 
         txtDeviceVersion =
             findViewById(
@@ -221,6 +299,7 @@ class ControlDeviceActivity : AppCompatActivity() {
                 R.id.cardZonePrimary
             )
 
+
         cardZoneSecondary =
             findViewById(
                 R.id.cardZoneSecondary
@@ -232,15 +311,18 @@ class ControlDeviceActivity : AppCompatActivity() {
                 R.id.txtPrimaryZoneName
             )
 
+
         txtPrimaryZoneInfo =
             findViewById(
                 R.id.txtPrimaryZoneInfo
             )
 
+
         txtSecondaryZoneName =
             findViewById(
                 R.id.txtSecondaryZoneName
             )
+
 
         txtSecondaryZoneInfo =
             findViewById(
@@ -270,6 +352,7 @@ class ControlDeviceActivity : AppCompatActivity() {
                 R.id.txtHeatLevel
             )
 
+
         txtZoneStatus =
             findViewById(
                 R.id.txtZoneStatus
@@ -287,10 +370,12 @@ class ControlDeviceActivity : AppCompatActivity() {
                 R.id.btnApplyIntensity
             )
 
+
         btnZonePower =
             findViewById(
                 R.id.btnZonePower
             )
+
 
         btnAllZonesPower =
             findViewById(
@@ -303,10 +388,12 @@ class ControlDeviceActivity : AppCompatActivity() {
                 R.id.heatBack
             )
 
+
         heatUpperBack =
             findViewById(
                 R.id.heatUpperBack
             )
+
 
         heatLowerBack =
             findViewById(
@@ -316,30 +403,21 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* BARRA SUPERIOR                */
+    /* TOP BAR                       */
     /* ============================= */
 
     private fun configureTopBar() {
 
-        val btnBack =
-            findViewById<ImageButton>(
-                R.id.btnBack
-            )
-
-
-        val btnSettings =
-            findViewById<ImageButton>(
-                R.id.btnSettings
-            )
-
-
-        btnBack.setOnClickListener {
-
+        findViewById<ImageButton>(
+            R.id.btnBack
+        ).setOnClickListener {
             finish()
         }
 
 
-        btnSettings.setOnClickListener {
+        findViewById<ImageButton>(
+            R.id.btnSettings
+        ).setOnClickListener {
 
             Toast.makeText(
                 this,
@@ -351,7 +429,7 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* CONFIGURAR MODELO             */
+    /* INTERFAZ MODELO               */
     /* ============================= */
 
     private fun configureDeviceInterface() {
@@ -360,29 +438,12 @@ class ControlDeviceActivity : AppCompatActivity() {
             deviceName
 
 
-        txtDeviceStatus.text =
-            if (deviceConnected) {
-
-                "● Conectado"
-
-            } else {
-
-                "● Desconectado"
-            }
-
-
-        txtDeviceStatus.setTextColor(
-            getColor(
-                if (deviceConnected) {
-
-                    R.color.tw_green
-
-                } else {
-
-                    R.color.tw_text_light
-                }
-            )
-        )
+        /*
+         * El prototipo actual no tiene
+         * temperatura.
+         */
+        containerTemperature.visibility =
+            View.GONE
 
 
         when (
@@ -395,12 +456,11 @@ class ControlDeviceActivity : AppCompatActivity() {
             else ->
                 configureV1()
         }
+
+
+        updateConnectionStatus()
     }
 
-
-    /* ============================= */
-    /* FORGE V1                      */
-    /* ============================= */
 
     private fun configureV1() {
 
@@ -420,26 +480,18 @@ class ControlDeviceActivity : AppCompatActivity() {
             "Espalda"
 
 
-        txtPrimaryZoneInfo.text =
-            "Apagada"
-
-
         cardZoneSecondary.visibility =
-            View.GONE
-
-
-        containerTemperature.visibility =
             View.GONE
 
 
         btnAllZonesPower.visibility =
             View.GONE
+
+
+        containerTemperature.visibility =
+            View.GONE
     }
 
-
-    /* ============================= */
-    /* FORGE V2                      */
-    /* ============================= */
 
     private fun configureV2() {
 
@@ -459,16 +511,8 @@ class ControlDeviceActivity : AppCompatActivity() {
             "Espalda alta"
 
 
-        txtPrimaryZoneInfo.text =
-            "38 °C"
-
-
         txtSecondaryZoneName.text =
             "Espalda baja"
-
-
-        txtSecondaryZoneInfo.text =
-            "Apagada"
 
 
         cardZoneSecondary.visibility =
@@ -479,66 +523,65 @@ class ControlDeviceActivity : AppCompatActivity() {
             View.VISIBLE
 
 
-        /*
-         * Sensor solamente en espalda alta.
-         */
         containerTemperature.visibility =
-            View.VISIBLE
+            View.GONE
     }
 
 
     /* ============================= */
-    /* SELECCIÓN DE ZONAS            */
+    /* SELECCIONAR ZONA              */
     /* ============================= */
 
     private fun configureZoneSelection() {
 
-        cardZonePrimary
-            .setOnClickListener {
+        cardZonePrimary.setOnClickListener {
 
-                selectedZone =
-                    if (isV2()) {
+            selectedZone =
+                if (
+                    isV2()
+                ) {
 
-                        Zone.UPPER_BACK
+                    Zone.UPPER_BACK
 
-                    } else {
+                } else {
 
-                        Zone.BACK
-                    }
-
-
-                pendingIntensity =
-                    getSelectedIntensity()
-
-
-                updateInterface()
-            }
-
-
-        cardZoneSecondary
-            .setOnClickListener {
-
-                if (!isV2()) {
-
-                    return@setOnClickListener
+                    Zone.BACK
                 }
 
 
-                selectedZone =
-                    Zone.LOWER_BACK
+            pendingIntensity =
+                getSelectedIntensity()
 
 
-                pendingIntensity =
-                    getSelectedIntensity()
+            updateInterface()
+        }
 
 
-                updateInterface()
+        cardZoneSecondary.setOnClickListener {
+
+            if (
+                !isV2()
+            ) {
+
+                return@setOnClickListener
             }
+
+
+            selectedZone =
+                Zone.LOWER_BACK
+
+
+            pendingIntensity =
+                getSelectedIntensity()
+
+
+            updateInterface()
+        }
     }
 
 
     /* ============================= */
-    /* SLIDER DE INTENSIDAD          */
+    /* SLIDER                        */
     /* ============================= */
 
     private fun configureSlider() {
@@ -550,7 +593,9 @@ class ControlDeviceActivity : AppCompatActivity() {
                     fromUser ->
 
 
-                if (!fromUser) {
+                if (
+                    !fromUser
+                ) {
 
                     return@addOnChangeListener
                 }
@@ -578,14 +623,16 @@ class ControlDeviceActivity : AppCompatActivity() {
 
     private fun configureButtons() {
 
-        /* ============================= */
-        /* APLICAR INTENSIDAD             */
-        /* ============================= */
+        /* ------------------------- */
+        /* INTENSIDAD                */
+        /* ------------------------- */
 
         btnApplyIntensity
             .setOnClickListener {
 
-                if (!deviceConnected) {
+                if (
+                    !deviceConnected
+                ) {
 
                     showDisconnectedMessage()
 
@@ -593,49 +640,67 @@ class ControlDeviceActivity : AppCompatActivity() {
                 }
 
 
-                setSelectedIntensity(
-                    pendingIntensity
-                )
+                val command =
+                    when (
+                        selectedZone
+                    ) {
+
+                        Zone.UPPER_BACK ->
+                            "UPPER_LEVEL:$pendingIntensity"
+
+                        Zone.LOWER_BACK ->
+                            "LOWER_LEVEL:$pendingIntensity"
+
+                        Zone.BACK ->
+                            null
+                    }
 
 
-                val intensityName =
-                    getIntensityName(
+                if (
+                    command == null
+                ) {
+
+                    return@setOnClickListener
+                }
+
+
+                if (
+                    BleManager.sendCommand(
+                        command
+                    )
+                ) {
+
+                    setSelectedIntensity(
                         pendingIntensity
                     )
 
 
-                val message =
-                    if (
-                        isSelectedZoneEnabled()
-                    ) {
-
-                        "Intensidad $intensityName aplicada a ${getSelectedZoneName()}"
-
-                    } else {
-
-                        "Intensidad $intensityName configurada para ${getSelectedZoneName()}"
-                    }
+                    Toast.makeText(
+                        this,
+                        "Intensidad ${getIntensityName(pendingIntensity)} enviada",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
 
-                Toast.makeText(
-                    this,
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
+                    updateInterface()
 
+                } else {
 
-                updateInterface()
+                    showBluetoothError()
+                }
             }
 
 
-        /* ============================= */
-        /* ENCENDER / APAGAR ZONA         */
-        /* ============================= */
+        /* ------------------------- */
+        /* UNA ZONA                  */
+        /* ------------------------- */
 
         btnZonePower
             .setOnClickListener {
 
-                if (!deviceConnected) {
+                if (
+                    !deviceConnected
+                ) {
 
                     showDisconnectedMessage()
 
@@ -647,41 +712,98 @@ class ControlDeviceActivity : AppCompatActivity() {
                     !isSelectedZoneEnabled()
 
 
-                setSelectedZoneEnabled(
-                    newState
-                )
+                val command =
+                    when (
+                        selectedZone
+                    ) {
+
+                        Zone.UPPER_BACK ->
+
+                            if (
+                                newState
+                            ) {
+
+                                "UPPER_ON"
+
+                            } else {
+
+                                "UPPER_OFF"
+                            }
 
 
-                val action =
-                    if (newState) {
+                        Zone.LOWER_BACK ->
 
-                        "encendida"
+                            if (
+                                newState
+                            ) {
 
-                    } else {
+                                "LOWER_ON"
 
-                        "apagada"
+                            } else {
+
+                                "LOWER_OFF"
+                            }
+
+
+                        Zone.BACK ->
+                            null
                     }
 
 
-                Toast.makeText(
-                    this,
-                    "${getSelectedZoneName()} $action",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (
+                    command == null
+                ) {
+
+                    return@setOnClickListener
+                }
 
 
-                updateInterface()
+                if (
+                    BleManager.sendCommand(
+                        command
+                    )
+                ) {
+
+                    setSelectedZoneEnabled(
+                        newState
+                    )
+
+
+                    Toast.makeText(
+                        this,
+                        if (
+                            newState
+                        ) {
+
+                            "${getSelectedZoneName()} encendida"
+
+                        } else {
+
+                            "${getSelectedZoneName()} apagada"
+                        },
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+                    updateInterface()
+
+                } else {
+
+                    showBluetoothError()
+                }
             }
 
 
-        /* ============================= */
-        /* ENCENDER / APAGAR TODO         */
-        /* ============================= */
+        /* ------------------------- */
+        /* TODAS                     */
+        /* ------------------------- */
 
         btnAllZonesPower
             .setOnClickListener {
 
-                if (!deviceConnected) {
+                if (
+                    !deviceConnected
+                ) {
 
                     showDisconnectedMessage()
 
@@ -693,7 +815,24 @@ class ControlDeviceActivity : AppCompatActivity() {
                     !areAllZonesEnabled()
 
 
-                if (isV2()) {
+                val command =
+                    if (
+                        shouldTurnOn
+                    ) {
+
+                        "ALL_ON"
+
+                    } else {
+
+                        "ALL_OFF"
+                    }
+
+
+                if (
+                    BleManager.sendCommand(
+                        command
+                    )
+                ) {
 
                     upperBackEnabled =
                         shouldTurnOn
@@ -702,38 +841,35 @@ class ControlDeviceActivity : AppCompatActivity() {
                     lowerBackEnabled =
                         shouldTurnOn
 
+
+                    Toast.makeText(
+                        this,
+                        if (
+                            shouldTurnOn
+                        ) {
+
+                            "Todas las zonas encendidas"
+
+                        } else {
+
+                            "Todas las zonas apagadas"
+                        },
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+                    updateInterface()
+
                 } else {
 
-                    backEnabled =
-                        shouldTurnOn
+                    showBluetoothError()
                 }
-
-
-                val message =
-                    if (shouldTurnOn) {
-
-                        "Todas las zonas encendidas"
-
-                    } else {
-
-                        "Todas las zonas apagadas"
-                    }
-
-
-                Toast.makeText(
-                    this,
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
-
-
-                updateInterface()
             }
     }
 
 
     /* ============================= */
-    /* ACTUALIZAR INTERFAZ           */
+    /* ACTUALIZAR                    */
     /* ============================= */
 
     private fun updateInterface() {
@@ -751,23 +887,59 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
+    /* CONEXIÓN                      */
+    /* ============================= */
+
+    private fun updateConnectionStatus() {
+
+        txtDeviceStatus.text =
+            if (
+                deviceConnected
+            ) {
+
+                "● Conectado"
+
+            } else {
+
+                "● Desconectado"
+            }
+
+
+        txtDeviceStatus.setTextColor(
+            getColor(
+                if (
+                    deviceConnected
+                ) {
+
+                    R.color.tw_green
+
+                } else {
+
+                    R.color.tw_text_light
+                }
+            )
+        )
+    }
+
+
+    /* ============================= */
     /* MAPA DE CALOR                 */
     /* ============================= */
 
     private fun updateHeatMap() {
 
-        if (isV2()) {
+        if (
+            isV2()
+        ) {
 
-            /*
-             * En Forge V2 existen dos
-             * zonas independientes.
-             */
             heatBack.visibility =
                 View.GONE
 
 
             heatUpperBack.visibility =
-                if (upperBackEnabled) {
+                if (
+                    upperBackEnabled
+                ) {
 
                     View.VISIBLE
 
@@ -778,7 +950,9 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
             heatLowerBack.visibility =
-                if (lowerBackEnabled) {
+                if (
+                    lowerBackEnabled
+                ) {
 
                     View.VISIBLE
 
@@ -789,10 +963,6 @@ class ControlDeviceActivity : AppCompatActivity() {
 
         } else {
 
-            /*
-             * Forge V1 tiene una sola
-             * zona general en la espalda.
-             */
             heatUpperBack.visibility =
                 View.GONE
 
@@ -802,7 +972,9 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
             heatBack.visibility =
-                if (backEnabled) {
+                if (
+                    backEnabled
+                ) {
 
                     View.VISIBLE
 
@@ -815,7 +987,7 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* ZONA SELECCIONADA             */
+    /* ZONA ACTUAL                   */
     /* ============================= */
 
     private fun updateSelectedZone() {
@@ -824,28 +996,9 @@ class ControlDeviceActivity : AppCompatActivity() {
             getSelectedZoneName()
 
 
-        if (
-            isV2() &&
-            selectedZone ==
-            Zone.UPPER_BACK
-        ) {
-
-            containerTemperature.visibility =
-                View.VISIBLE
-
-
-            /*
-             * Simulación hasta conectar
-             * el sensor real del ESP32.
-             */
-            txtCurrentTemperature.text =
-                "38 °C"
-
-        } else {
-
-            containerTemperature.visibility =
-                View.GONE
-        }
+        containerTemperature.visibility =
+            if (isV2() && selectedZone == Zone.UPPER_BACK) View.VISIBLE else View.GONE
+        txtCurrentTemperature.text = currentTemperatureLabel
 
 
         sliderIntensity.value =
@@ -867,7 +1020,9 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
         txtZoneStatus.text =
-            if (enabled) {
+            if (
+                enabled
+            ) {
 
                 "Estado: Encendida"
 
@@ -879,7 +1034,9 @@ class ControlDeviceActivity : AppCompatActivity() {
 
         txtZoneStatus.setTextColor(
             getColor(
-                if (enabled) {
+                if (
+                    enabled
+                ) {
 
                     R.color.tw_green
 
@@ -893,26 +1050,23 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* TARJETAS DE ZONAS             */
+    /* TARJETAS                      */
     /* ============================= */
 
     private fun updateZoneCards() {
 
-        if (isV2()) {
+        if (
+            isV2()
+        ) {
 
             txtPrimaryZoneInfo.text =
-                if (upperBackEnabled) {
-
-                    "38 °C · ${getIntensityName(upperBackIntensity)}"
-
-                } else {
-
-                    "38 °C · Apagada"
-                }
+                currentTemperatureLabel
 
 
             txtSecondaryZoneInfo.text =
-                if (lowerBackEnabled) {
+                if (
+                    lowerBackEnabled
+                ) {
 
                     getIntensityName(
                         lowerBackIntensity
@@ -926,7 +1080,9 @@ class ControlDeviceActivity : AppCompatActivity() {
         } else {
 
             txtPrimaryZoneInfo.text =
-                if (backEnabled) {
+                if (
+                    backEnabled
+                ) {
 
                     getIntensityName(
                         backIntensity
@@ -941,7 +1097,7 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* ESTILO DE SELECCIÓN           */
+    /* ESTILO TARJETAS               */
     /* ============================= */
 
     private fun updateSelectedCardStyle() {
@@ -958,7 +1114,9 @@ class ControlDeviceActivity : AppCompatActivity() {
             )
 
 
-        if (isV2()) {
+        if (
+            isV2()
+        ) {
 
             if (
                 selectedZone ==
@@ -1021,17 +1179,15 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* BOTONES DE ENCENDIDO          */
+    /* BOTONES ESTADO                */
     /* ============================= */
 
     private fun updatePowerButtons() {
 
-        val selectedZoneEnabled =
-            isSelectedZoneEnabled()
-
-
         btnZonePower.text =
-            if (selectedZoneEnabled) {
+            if (
+                isSelectedZoneEnabled()
+            ) {
 
                 "Apagar zona"
 
@@ -1041,14 +1197,18 @@ class ControlDeviceActivity : AppCompatActivity() {
             }
 
 
-        if (isV2()) {
+        if (
+            isV2()
+        ) {
 
             btnAllZonesPower.visibility =
                 View.VISIBLE
 
 
             btnAllZonesPower.text =
-                if (areAllZonesEnabled()) {
+                if (
+                    areAllZonesEnabled()
+                ) {
 
                     "Apagar todas las zonas"
 
@@ -1065,24 +1225,24 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
         sliderIntensity.isEnabled =
-            deviceConnected
+            deviceConnected && isV2()
 
 
         btnApplyIntensity.isEnabled =
-            deviceConnected
+            deviceConnected && isV2()
 
 
         btnZonePower.isEnabled =
-            deviceConnected
+            deviceConnected && isV2()
 
 
         btnAllZonesPower.isEnabled =
-            deviceConnected
+            deviceConnected && isV2()
     }
 
 
     /* ============================= */
-    /* NIVEL DE CALOR                */
+    /* INTENSIDAD                    */
     /* ============================= */
 
     private fun updateHeatLevel(
@@ -1125,10 +1285,6 @@ class ControlDeviceActivity : AppCompatActivity() {
         }
     }
 
-
-    /* ============================= */
-    /* COLOR DEL SLIDER              */
-    /* ============================= */
 
     private fun updateSliderColor(
         intensity: Int
@@ -1180,7 +1336,6 @@ class ControlDeviceActivity : AppCompatActivity() {
                     77
                 )
 
-
             2 ->
                 Color.rgb(
                     255,
@@ -1188,14 +1343,12 @@ class ControlDeviceActivity : AppCompatActivity() {
                     54
                 )
 
-
             3 ->
                 Color.rgb(
                     229,
                     72,
                     72
                 )
-
 
             else ->
                 getColor(
@@ -1206,7 +1359,7 @@ class ControlDeviceActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* ESTADO DE ZONA                */
+    /* ESTADOS DE ZONA               */
     /* ============================= */
 
     private fun isSelectedZoneEnabled():
@@ -1219,10 +1372,8 @@ class ControlDeviceActivity : AppCompatActivity() {
             Zone.BACK ->
                 backEnabled
 
-
             Zone.UPPER_BACK ->
                 upperBackEnabled
-
 
             Zone.LOWER_BACK ->
                 lowerBackEnabled
@@ -1238,32 +1389,20 @@ class ControlDeviceActivity : AppCompatActivity() {
             selectedZone
         ) {
 
-            Zone.BACK -> {
-
+            Zone.BACK ->
                 backEnabled =
                     enabled
-            }
 
-
-            Zone.UPPER_BACK -> {
-
+            Zone.UPPER_BACK ->
                 upperBackEnabled =
                     enabled
-            }
 
-
-            Zone.LOWER_BACK -> {
-
+            Zone.LOWER_BACK ->
                 lowerBackEnabled =
                     enabled
-            }
         }
     }
 
-
-    /* ============================= */
-    /* INTENSIDAD APLICADA           */
-    /* ============================= */
 
     private fun getSelectedIntensity():
             Int {
@@ -1275,10 +1414,8 @@ class ControlDeviceActivity : AppCompatActivity() {
             Zone.BACK ->
                 backIntensity
 
-
             Zone.UPPER_BACK ->
                 upperBackIntensity
-
 
             Zone.LOWER_BACK ->
                 lowerBackIntensity
@@ -1294,32 +1431,20 @@ class ControlDeviceActivity : AppCompatActivity() {
             selectedZone
         ) {
 
-            Zone.BACK -> {
-
+            Zone.BACK ->
                 backIntensity =
                     intensity
-            }
 
-
-            Zone.UPPER_BACK -> {
-
+            Zone.UPPER_BACK ->
                 upperBackIntensity =
                     intensity
-            }
 
-
-            Zone.LOWER_BACK -> {
-
+            Zone.LOWER_BACK ->
                 lowerBackIntensity =
                     intensity
-            }
         }
     }
 
-
-    /* ============================= */
-    /* NOMBRE DE ZONA                */
-    /* ============================= */
 
     private fun getSelectedZoneName():
             String {
@@ -1331,20 +1456,14 @@ class ControlDeviceActivity : AppCompatActivity() {
             Zone.BACK ->
                 "Espalda"
 
-
             Zone.UPPER_BACK ->
                 "Espalda alta"
-
 
             Zone.LOWER_BACK ->
                 "Espalda baja"
         }
     }
 
-
-    /* ============================= */
-    /* TODAS LAS ZONAS              */
-    /* ============================= */
 
     private fun areAllZonesEnabled():
             Boolean {
@@ -1363,35 +1482,201 @@ class ControlDeviceActivity : AppCompatActivity() {
     }
 
 
-    /* ============================= */
-    /* VERIFICAR VERSIÓN             */
-    /* ============================= */
-
     private fun isV2():
             Boolean {
 
-        return deviceVersion
-            .uppercase() ==
+        return deviceVersion.uppercase() ==
                 "V2"
     }
 
 
     /* ============================= */
-    /* DISPOSITIVO DESCONECTADO      */
+    /* BLE CALLBACKS                 */
+    /* ============================= */
+
+    override fun onScanning() {
+    }
+
+
+    override fun onDeviceFound(
+        name: String,
+        address: String
+    ) {
+    }
+
+
+    override fun onConnecting() {
+    }
+
+
+    override fun onConnected(
+        address: String
+    ) {
+
+        runOnUiThread {
+
+            deviceConnected =
+                true
+
+
+            updateConnectionStatus()
+
+            updatePowerButtons()
+        }
+    }
+
+
+    override fun onReady() {
+
+        runOnUiThread {
+
+            deviceConnected =
+                true
+
+
+            DeviceManager.setConnection(
+                this,
+                deviceId,
+                true
+            )
+
+
+            updateConnectionStatus()
+
+            updatePowerButtons()
+        }
+    }
+
+
+    override fun onMessageReceived(message: String) {
+        val received = message.trim()
+        runOnUiThread {
+            when {
+                received.startsWith("TEMP:") -> {
+                    val temperature = received.substringAfter("TEMP:").toDoubleOrNull()
+                    currentTemperatureLabel =
+                        if (temperature != null && temperature.isFinite() &&
+                            temperature in -55.0..125.0
+                        ) {
+                            String.format(Locale.US, "%.1f °C", temperature)
+                        } else {
+                            "Sin lectura"
+                        }
+                    txtCurrentTemperature.text = currentTemperatureLabel
+                    updateZoneCards()
+                }
+                received == "ERROR:TEMP_SENSOR" -> {
+                    currentTemperatureLabel = "Sensor sin lectura"
+                    txtCurrentTemperature.text = currentTemperatureLabel
+                    updateZoneCards()
+                }
+                received.startsWith("ERROR") -> {
+                    Toast.makeText(this, "ESP32: $received", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
+    override fun onDisconnected() {
+
+        runOnUiThread {
+
+            deviceConnected =
+                false
+
+            currentTemperatureLabel = "-- °C"
+
+
+            upperBackEnabled =
+                false
+
+
+            lowerBackEnabled =
+                false
+
+
+            backEnabled =
+                false
+
+
+            DeviceManager.setConnection(
+                this,
+                deviceId,
+                false
+            )
+
+
+            updateConnectionStatus()
+
+            updateInterface()
+
+
+            Toast.makeText(
+                this,
+                "Se perdió la conexión con Forge V2.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+
+    override fun onError(
+        message: String
+    ) {
+
+        runOnUiThread {
+
+            Toast.makeText(
+                this,
+                message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+
+    /* ============================= */
+    /* MENSAJES                      */
     /* ============================= */
 
     private fun showDisconnectedMessage() {
 
         Toast.makeText(
             this,
-            "El dispositivo está desconectado.",
+            "Forge V2 está desconectada.",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+
+    private fun showBluetoothError() {
+
+        Toast.makeText(
+            this,
+            "No se pudo enviar el comando Bluetooth.",
             Toast.LENGTH_SHORT
         ).show()
     }
 
 
     /* ============================= */
-    /* CONVERSIÓN DP                 */
+    /* FINISH                        */
+    /* ============================= */
+
+    override fun finish() {
+
+        super.finish()
+
+
+        ScreenTransitions.closeSlide(
+            this
+        )
+    }
+
+
+    /* ============================= */
+    /* DP                            */
     /* ============================= */
 
     private fun dpToPx(

@@ -10,11 +10,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.NumberPicker
 import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import com.example.thermowear.R
 import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.data.HistoryManager
@@ -28,6 +29,7 @@ import com.example.thermowear.model.ThermoWearZone
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.settings.SettingsActivity
+import com.example.thermowear.ui.ThermoWearActivity
 import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
@@ -35,7 +37,9 @@ import java.util.Calendar
 import java.util.Locale
 
 
-class HistoryActivity : AppCompatActivity() {
+class HistoryActivity : ThermoWearActivity() {
+
+    override val isNavigationMenu = true
 
 
     /**
@@ -72,6 +76,18 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var txtSelectedDate:
             TextView
 
+    private lateinit var txtHistorySummaryTitle:
+            TextView
+
+    private var selectedDayOfMonth: Int? =
+        null
+
+    private lateinit var txtSelectedDay:
+            TextView
+
+    private lateinit var btnClearDayFilter:
+            TextView
+
     private lateinit var txtTotalTime:
             TextView
 
@@ -106,6 +122,8 @@ class HistoryActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_history
         )
+
+        com.example.thermowear.util.WindowInsetsHelper.apply(this)
 
 
         bindViews()
@@ -144,6 +162,21 @@ class HistoryActivity : AppCompatActivity() {
         txtSelectedDate =
             findViewById(
                 R.id.txtSelectedDate
+            )
+
+        txtHistorySummaryTitle =
+            findViewById(
+                R.id.txtHistorySummaryTitle
+            )
+
+        txtSelectedDay =
+            findViewById(
+                R.id.txtSelectedDay
+            )
+
+        btnClearDayFilter =
+            findViewById(
+                R.id.btnClearDayFilter
             )
 
         txtTotalTime =
@@ -297,9 +330,20 @@ class HistoryActivity : AppCompatActivity() {
 
         dateSelector
             .setOnClickListener {
-
-                showDatePicker()
+                showMonthPicker()
             }
+
+        findViewById<MaterialCardView>(
+            R.id.cardDayFilter
+        ).setOnClickListener {
+            showDayPicker()
+        }
+
+        btnClearDayFilter.setOnClickListener {
+            selectedDayOfMonth = null
+            updateDateSelector()
+            refreshHistory()
+        }
     }
 
 
@@ -385,63 +429,134 @@ class HistoryActivity : AppCompatActivity() {
     }
 
 
-    private fun showDatePicker() {
+    private fun showMonthPicker() {
+        val locale = Locale("es", "BO")
+        val monthLabels = (0..11).map { month ->
+            val monthCalendar = Calendar.getInstance().apply {
+                set(Calendar.YEAR, 2020)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, 1)
+            }
+            SimpleDateFormat("MMMM", locale)
+                .format(monthCalendar.time)
+                .replaceFirstChar { it.titlecase(locale) }
+        }.toTypedArray()
 
-        val dialog =
-            DatePickerDialog(
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val monthPicker = NumberPicker(this).apply {
+            wrapSelectorWheel = false
+        }
+        val yearPicker = NumberPicker(this).apply {
+            minValue = 2000
+            maxValue = currentYear
+            value = selectedDate.get(Calendar.YEAR).coerceIn(2000, currentYear)
+            wrapSelectorWheel = false
+        }
 
-                this,
+        fun updateMonthRange(year: Int, preferredMonth: Int) {
+            val maxMonth = if (year == currentYear) {
+                Calendar.getInstance().get(Calendar.MONTH)
+            } else {
+                Calendar.DECEMBER
+            }
+            monthPicker.displayedValues = null
+            monthPicker.minValue = Calendar.JANUARY
+            monthPicker.maxValue = maxMonth
+            monthPicker.displayedValues = monthLabels.copyOfRange(0, maxMonth + 1)
+            monthPicker.value = preferredMonth.coerceIn(Calendar.JANUARY, maxMonth)
+        }
 
-                {
-                        _,
-                        year,
-                        month,
-                        day ->
+        updateMonthRange(
+            yearPicker.value,
+            selectedDate.get(Calendar.MONTH)
+        )
+        yearPicker.setOnValueChangedListener { _, _, year ->
+            updateMonthRange(year, monthPicker.value)
+        }
 
-
-                    selectedDate.set(
-                        Calendar.YEAR,
-                        year
-                    )
-
-                    selectedDate.set(
-                        Calendar.MONTH,
-                        month
-                    )
-
-                    selectedDate.set(
-                        Calendar.DAY_OF_MONTH,
-                        day
-                    )
-
-
-                    updateDateSelector()
-
-                    refreshHistory()
-                },
-
-                selectedDate.get(
-                    Calendar.YEAR
-                ),
-
-                selectedDate.get(
-                    Calendar.MONTH
-                ),
-
-                selectedDate.get(
-                    Calendar.DAY_OF_MONTH
-                )
+        val monthLabel = TextView(this).apply {
+            text = "Mes"
+            textSize = 14f
+            setTextColor(getColor(R.color.tw_text_secondary))
+        }
+        val yearLabel = TextView(this).apply {
+            text = "Año"
+            textSize = 14f
+            setTextColor(getColor(R.color.tw_text_secondary))
+        }
+        val pickerRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            addView(
+                monthPicker,
+                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             )
+            addView(
+                yearPicker,
+                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            )
+        }
+        val pickerContent = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            val horizontalPadding = (24 * resources.displayMetrics.density).toInt()
+            val verticalPadding = (8 * resources.displayMetrics.density).toInt()
+            setPadding(horizontalPadding, verticalPadding, horizontalPadding, 0)
+            addView(
+                LinearLayout(this@HistoryActivity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    addView(monthLabel, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(yearLabel, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                }
+            )
+            addView(pickerRow)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar mes")
+            .setView(pickerContent)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Aplicar") { _, _ ->
+                selectedDate.set(Calendar.YEAR, yearPicker.value)
+                selectedDate.set(Calendar.MONTH, monthPicker.value)
+                selectedDate.set(Calendar.DAY_OF_MONTH, 1)
+                selectedDayOfMonth = null
+                updateDateSelector()
+                refreshHistory()
+            }
+            .show()
+    }
 
 
-        /*
-         * No tiene sentido consultar
-         * fechas futuras.
-         */
+    private fun showDayPicker() {
+        val initialDay = selectedDayOfMonth
+            ?: selectedDate.get(Calendar.DAY_OF_MONTH)
+
+        val dialog = DatePickerDialog(
+            this,
+            { _, _, _, day ->
+                selectedDayOfMonth = day
+                updateDateSelector()
+                refreshHistory()
+            },
+            selectedDate.get(Calendar.YEAR),
+            selectedDate.get(Calendar.MONTH),
+            initialDay
+        )
+
+        val monthStart = (selectedDate.clone() as Calendar).apply {
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val monthEnd = (monthStart.clone() as Calendar).apply {
+            add(Calendar.MONTH, 1)
+            add(Calendar.MILLISECOND, -1)
+        }
+
+        dialog.datePicker.minDate = monthStart.timeInMillis
         dialog.datePicker.maxDate =
-            System.currentTimeMillis()
-
-
+            minOf(monthEnd.timeInMillis, System.currentTimeMillis())
         dialog.show()
     }
 
@@ -483,77 +598,58 @@ class HistoryActivity : AppCompatActivity() {
 
 
     private fun updateDateSelector() {
-
-        val today =
-            Calendar.getInstance()
-
-
-        if (
-            isSameDay(
-                selectedDate,
-                today
-            )
-        ) {
-
-            txtSelectedDate.text =
-                "Hoy"
-
-
-            return
-        }
-
-
-        val formatter =
-            SimpleDateFormat(
-                "dd MMM yyyy",
-                Locale(
-                    "es",
-                    "BO"
-                )
-            )
-
+        val locale = Locale("es", "BO")
+        val monthName = SimpleDateFormat("MMMM yyyy", locale)
+            .format(selectedDate.time)
 
         txtSelectedDate.text =
-            formatter.format(
-                selectedDate.time
-            )
+            "Mes: $monthName"
+
+        txtSelectedDay.text =
+            selectedDayOfMonth?.let { day ->
+                val selectedDayDate = (selectedDate.clone() as Calendar).apply {
+                    set(Calendar.DAY_OF_MONTH, day)
+                }
+                "Día: " + SimpleDateFormat("dd MMM yyyy", locale)
+                    .format(selectedDayDate.time)
+            } ?: "Filtrar por día (opcional)"
+
+        btnClearDayFilter.visibility =
+            if (selectedDayOfMonth == null) View.GONE else View.VISIBLE
+
+        txtHistorySummaryTitle.text =
+            if (selectedDayOfMonth == null) {
+                "Uso del mes"
+            } else {
+                "Uso del día"
+            }
+
+        txtNoSessions.text =
+            if (selectedDayOfMonth == null) {
+                "No hay sesiones registradas para este mes."
+            } else {
+                "No hay sesiones registradas para este día."
+            }
     }
 
 
     private fun refreshHistory() {
-
-        val device =
-            selectedDevice
-                ?: return
-
-
-        val sessions =
-            HistoryManager
-                .getSessionsForDevice(
-                    this,
-                    device.id
-                )
-                .filter {
-
-                    isSameDay(
-                        it.startTimeMillis,
-                        selectedDate
-                    )
+        val device = selectedDevice ?: return
+        val sessions = HistoryManager
+            .getSessionsForDevice(this, device.id)
+            .filter { session ->
+                val sessionDate = Calendar.getInstance().apply {
+                    timeInMillis = session.startTimeMillis
                 }
+                sessionDate.get(Calendar.YEAR) == selectedDate.get(Calendar.YEAR) &&
+                    sessionDate.get(Calendar.MONTH) == selectedDate.get(Calendar.MONTH) &&
+                    (selectedDayOfMonth == null ||
+                        sessionDate.get(Calendar.DAY_OF_MONTH) == selectedDayOfMonth)
+            }
 
-
-        renderSummary(
-            sessions
-        )
-
-        renderZones(
-            device,
-            sessions
-        )
-
-        renderSessions(
-            sessions
-        )
+        renderSummary(sessions)
+        renderZones(device, sessions)
+        renderSessions(sessions)
     }
 
 
@@ -1533,7 +1629,7 @@ class HistoryActivity : AppCompatActivity() {
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
 
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 intent
             )
@@ -1548,7 +1644,7 @@ class HistoryActivity : AppCompatActivity() {
 
         navAlerts.setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,
@@ -1566,7 +1662,7 @@ class HistoryActivity : AppCompatActivity() {
 
         navSettings.setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,

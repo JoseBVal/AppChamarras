@@ -1,9 +1,6 @@
 package com.example.thermowear.ui.devices
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -12,21 +9,28 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.example.thermowear.R
+import com.example.thermowear.bluetooth.BleManager
 import com.example.thermowear.data.AlertManager
 import com.example.thermowear.data.DeviceManager
 import com.example.thermowear.model.ThermoWearDevice
+import com.example.thermowear.model.ThermoWearVersion
 import com.example.thermowear.notifications.NotificationHelper
 import com.example.thermowear.ui.adddevice.AddDeviceActivity
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.control.ControlDeviceActivity
 import com.example.thermowear.ui.history.HistoryActivity
 import com.example.thermowear.ui.settings.SettingsActivity
+import com.example.thermowear.ui.ThermoWearActivity
 import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.button.MaterialButton
 
-class DevicesActivity : AppCompatActivity() {
+
+class DevicesActivity :
+    ThermoWearActivity(),
+    BleManager.Listener {
+
+    override val isNavigationMenu = true
 
     private lateinit var containerDevices:
             LinearLayout
@@ -35,26 +39,40 @@ class DevicesActivity : AppCompatActivity() {
             LinearLayout
 
 
-    /*
-     * Solicitud moderna del permiso
-     * de notificaciones.
-     */
-    private val notificationPermissionLauncher =
+    private var reconnectingDeviceId:
+            String? =
+        null
+
+
+    /* ============================= */
+    /* BLUETOOTH                     */
+    /* ============================= */
+
+    private val bluetoothPermissionLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) {
-                granted ->
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+
+            val granted =
+                permissions.values.all {
+                    it
+                }
+
 
             if (!granted) {
 
                 Toast.makeText(
                     this,
-                    "Puedes activar las notificaciones más adelante desde los ajustes de Android.",
+                    "ThermoWear necesita permiso Bluetooth.",
                     Toast.LENGTH_LONG
                 ).show()
             }
         }
 
+
+    /* ============================= */
+    /* ON CREATE                     */
+    /* ============================= */
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -69,18 +87,13 @@ class DevicesActivity : AppCompatActivity() {
             R.layout.activity_devices
         )
 
+        com.example.thermowear.util.WindowInsetsHelper.apply(this)
 
-        /*
-         * Crear el canal es seguro aunque
-         * ya exista.
-         */
+
         NotificationHelper
             .createNotificationChannel(
                 this
             )
-
-
-        requestNotificationPermissionIfNeeded()
 
 
         containerDevices =
@@ -107,27 +120,17 @@ class DevicesActivity : AppCompatActivity() {
             )
 
 
-        /* ============================= */
-        /* AÑADIR DISPOSITIVO            */
-        /* ============================= */
+        btnAddDevice.setOnClickListener {
 
-        btnAddDevice
-            .setOnClickListener {
-
-                openAddDevice()
-            }
+            openAddDevice()
+        }
 
 
-        btnEmptyAddDevice
-            .setOnClickListener {
+        btnEmptyAddDevice.setOnClickListener {
 
-                openAddDevice()
-            }
+            openAddDevice()
+        }
 
-
-        /* ============================= */
-        /* NAVEGACIÓN                    */
-        /* ============================= */
 
         configureNavigation()
 
@@ -135,9 +138,17 @@ class DevicesActivity : AppCompatActivity() {
     }
 
 
+    /* ============================= */
+    /* ON RESUME                     */
+    /* ============================= */
+
     override fun onResume() {
 
         super.onResume()
+
+
+        BleManager.listener =
+            this
 
 
         loadDevices()
@@ -147,36 +158,28 @@ class DevicesActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* PERMISO DE NOTIFICACIONES     */
+    /* ON PAUSE                      */
     /* ============================= */
 
-    private fun requestNotificationPermissionIfNeeded() {
+    override fun onPause() {
 
         if (
-            Build.VERSION.SDK_INT <
-            Build.VERSION_CODES.TIRAMISU
+            BleManager.listener ===
+            this
         ) {
 
-            return
+            BleManager.listener =
+                null
         }
 
 
-        if (
-            checkSelfPermission(
-                Manifest.permission.POST_NOTIFICATIONS
-            ) ==
-            PackageManager.PERMISSION_GRANTED
-        ) {
-
-            return
-        }
-
-
-        notificationPermissionLauncher.launch(
-            Manifest.permission.POST_NOTIFICATIONS
-        )
+        super.onPause()
     }
 
+
+    /* ============================= */
+    /* ABRIR AÑADIR                  */
+    /* ============================= */
 
     private fun openAddDevice() {
 
@@ -196,8 +199,7 @@ class DevicesActivity : AppCompatActivity() {
 
     private fun loadDevices() {
 
-        containerDevices
-            .removeAllViews()
+        containerDevices.removeAllViews()
 
 
         val devices =
@@ -206,7 +208,9 @@ class DevicesActivity : AppCompatActivity() {
             )
 
 
-        if (devices.isEmpty()) {
+        if (
+            devices.isEmpty()
+        ) {
 
             emptyState.visibility =
                 View.VISIBLE
@@ -215,29 +219,30 @@ class DevicesActivity : AppCompatActivity() {
             containerDevices.visibility =
                 View.GONE
 
-        } else {
 
-            emptyState.visibility =
-                View.GONE
-
-
-            containerDevices.visibility =
-                View.VISIBLE
+            return
+        }
 
 
-            devices.forEach {
-                    device ->
+        emptyState.visibility =
+            View.GONE
 
-                addDeviceCard(
-                    device
-                )
-            }
+
+        containerDevices.visibility =
+            View.VISIBLE
+
+
+        devices.forEach { device ->
+
+            addDeviceCard(
+                device
+            )
         }
     }
 
 
     /* ============================= */
-    /* CREAR TARJETA                 */
+    /* TARJETA                       */
     /* ============================= */
 
     private fun addDeviceCard(
@@ -282,10 +287,6 @@ class DevicesActivity : AppCompatActivity() {
             )
 
 
-        /* ============================= */
-        /* DATOS                         */
-        /* ============================= */
-
         val versionName =
             device.version.name
 
@@ -299,7 +300,9 @@ class DevicesActivity : AppCompatActivity() {
 
 
         val zoneText =
-            if (device.zoneCount == 1) {
+            if (
+                device.zoneCount == 1
+            ) {
 
                 "1 zona"
 
@@ -313,11 +316,13 @@ class DevicesActivity : AppCompatActivity() {
             "Forge $versionName · $zoneText"
 
 
-        /* ============================= */
-        /* CONEXIÓN                      */
-        /* ============================= */
+        /* ========================= */
+        /* ESTADO                    */
+        /* ========================= */
 
-        if (device.connected) {
+        if (
+            device.connected
+        ) {
 
             txtDeviceStatus.text =
                 "● Conectado"
@@ -351,13 +356,15 @@ class DevicesActivity : AppCompatActivity() {
         }
 
 
-        /* ============================= */
-        /* ABRIR CONTROL                 */
-        /* ============================= */
+        /* ========================= */
+        /* ABRIR CONTROL             */
+        /* ========================= */
 
         view.setOnClickListener {
 
-            if (device.connected) {
+            if (
+                device.connected
+            ) {
 
                 openDevice(
                     device,
@@ -375,50 +382,70 @@ class DevicesActivity : AppCompatActivity() {
         }
 
 
-        /* ============================= */
-        /* CONECTAR / DESCONECTAR        */
-        /* ============================= */
+        /* ========================= */
+        /* CONECTAR/DESCONECTAR      */
+        /* ========================= */
 
         btnConnectionAction
             .setOnClickListener {
 
-                val newConnectionState =
-                    !device.connected
+
+                if (
+                    device.version ==
+                    ThermoWearVersion.V1
+                ) {
+
+                    Toast.makeText(
+                        this,
+                        "Forge V1 no utiliza Bluetooth.",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
 
-                DeviceManager
-                    .setConnection(
+                    return@setOnClickListener
+                }
+
+
+                if (
+                    device.connected
+                ) {
+
+                    BleManager.disconnect()
+
+
+                    DeviceManager.setConnection(
                         this,
                         device.id,
-                        newConnectionState
+                        false
                     )
 
 
-                val message =
-                    if (newConnectionState) {
+                    loadDevices()
 
-                        "$displayName conectada"
+                } else {
 
-                    } else {
-
-                        "$displayName desconectada"
-                    }
+                    reconnectingDeviceId =
+                        device.id
 
 
-                Toast.makeText(
-                    this,
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
+                    Toast.makeText(
+                        this,
+                        "Conectando con Forge V2...",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
 
-                loadDevices()
+                    BleManager.connectToAddress(
+                        this,
+                        device.id
+                    )
+                }
             }
 
 
-        /* ============================= */
-        /* ELIMINAR                      */
-        /* ============================= */
+        /* ========================= */
+        /* ELIMINAR                  */
+        /* ========================= */
 
         btnDeleteDevice
             .setOnClickListener {
@@ -437,7 +464,7 @@ class DevicesActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* CONTROL DEL DISPOSITIVO       */
+    /* ABRIR CONTROL                 */
     /* ============================= */
 
     private fun openDevice(
@@ -458,10 +485,6 @@ class DevicesActivity : AppCompatActivity() {
         )
 
 
-        /*
-         * Nombre visual correcto para
-         * la pantalla de Control.
-         */
         intent.putExtra(
             "DEVICE_NAME",
             displayName
@@ -471,18 +494,6 @@ class DevicesActivity : AppCompatActivity() {
         intent.putExtra(
             "DEVICE_VERSION",
             device.version.name
-        )
-
-
-        /*
-         * Se mantiene temporalmente por
-         * compatibilidad con ControlDeviceActivity.
-         *
-         * Ya no se muestra en Mis Dispositivos.
-         */
-        intent.putExtra(
-            "DEVICE_BATTERY",
-            device.battery
         )
 
 
@@ -500,7 +511,7 @@ class DevicesActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* CONFIRMAR ELIMINACIÓN         */
+    /* ELIMINAR                      */
     /* ============================= */
 
     private fun showDeleteDialog(
@@ -523,16 +534,23 @@ class DevicesActivity : AppCompatActivity() {
             )
             .setPositiveButton(
                 "Eliminar"
-            ) {
-                    _,
-                    _ ->
+            ) { _, _ ->
 
 
-                DeviceManager
-                    .removeDevice(
-                        this,
-                        device.id
-                    )
+                if (
+                    device.connected &&
+                    device.version ==
+                    ThermoWearVersion.V2
+                ) {
+
+                    BleManager.disconnect()
+                }
+
+
+                DeviceManager.removeDevice(
+                    this,
+                    device.id
+                )
 
 
                 Toast.makeText(
@@ -549,7 +567,133 @@ class DevicesActivity : AppCompatActivity() {
 
 
     /* ============================= */
-    /* NAVEGACIÓN INFERIOR           */
+    /* BLE                           */
+    /* ============================= */
+
+    override fun onScanning() {
+    }
+
+
+    override fun onDeviceFound(
+        name: String,
+        address: String
+    ) {
+    }
+
+
+    override fun onConnecting() {
+    }
+
+
+    override fun onConnected(
+        address: String
+    ) {
+
+        runOnUiThread {
+
+            Toast.makeText(
+                this,
+                "Bluetooth conectado",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+    override fun onReady() {
+
+        runOnUiThread {
+
+            reconnectingDeviceId?.let {
+
+                DeviceManager.setConnection(
+                    this,
+                    it,
+                    true
+                )
+            }
+
+
+            reconnectingDeviceId =
+                null
+
+
+            loadDevices()
+
+
+            Toast.makeText(
+                this,
+                "Forge V2 conectada",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+    override fun onMessageReceived(
+        message: String
+    ) {
+    }
+
+
+    override fun onDisconnected() {
+
+        runOnUiThread {
+
+            DeviceManager
+                .getDevices(
+                    this
+                )
+                .filter {
+                    it.version ==
+                            ThermoWearVersion.V2
+                }
+                .forEach {
+
+                    DeviceManager.setConnection(
+                        this,
+                        it.id,
+                        false
+                    )
+                }
+
+
+            loadDevices()
+
+
+            Toast.makeText(
+                this,
+                "Forge V2 desconectada",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+    override fun onError(
+        message: String
+    ) {
+
+        runOnUiThread {
+
+            reconnectingDeviceId =
+                null
+
+
+            Toast.makeText(
+                this,
+                message,
+                Toast.LENGTH_LONG
+            ).show()
+
+
+            loadDevices()
+        }
+    }
+
+
+    /* ============================= */
+    /* NAVEGACIÓN                    */
     /* ============================= */
 
     private fun configureNavigation() {
@@ -558,7 +702,7 @@ class DevicesActivity : AppCompatActivity() {
             R.id.navHistory
         ).setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,
@@ -572,7 +716,7 @@ class DevicesActivity : AppCompatActivity() {
             R.id.navAlerts
         ).setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,
@@ -586,7 +730,7 @@ class DevicesActivity : AppCompatActivity() {
             R.id.navSettings
         ).setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,
@@ -596,10 +740,6 @@ class DevicesActivity : AppCompatActivity() {
         }
     }
 
-
-    /* ============================= */
-    /* INICIO SELECCIONADO           */
-    /* ============================= */
 
     private fun configureBottomNavigation() {
 
@@ -640,10 +780,6 @@ class DevicesActivity : AppCompatActivity() {
         )
     }
 
-
-    /* ============================= */
-    /* PUNTO ROJO DE ALERTAS         */
-    /* ============================= */
 
     private fun updateAlertIndicator() {
 

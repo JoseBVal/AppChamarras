@@ -1,33 +1,59 @@
 package com.example.thermowear.ui.settings
 
 import android.content.Intent
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.thermowear.R
 import com.example.thermowear.data.AlertManager
 import com.example.thermowear.data.SettingsManager
 import com.example.thermowear.ui.alerts.AlertsActivity
 import com.example.thermowear.ui.devices.DevicesActivity
 import com.example.thermowear.ui.history.HistoryActivity
+import com.example.thermowear.ui.ThermoWearActivity
 import com.example.thermowear.util.ScreenTransitions
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : ThermoWearActivity() {
+
+    override val isNavigationMenu = true
 
     private lateinit var switchNotifications: SwitchMaterial
     private lateinit var switchSound: SwitchMaterial
     private lateinit var switchVibration: SwitchMaterial
+
+    private var updatingNotificationSwitch = false
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            setNotificationsSwitch(granted)
+            Toast.makeText(
+                this,
+                if (granted) {
+                    "Notificaciones ThermoWear activadas"
+                } else {
+                    "Permiso denegado. Puedes activarlo desde los ajustes de Android."
+                },
+                Toast.LENGTH_LONG
+            ).show()
+        }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_settings)
+
+        com.example.thermowear.util.WindowInsetsHelper.apply(this)
 
         configureViews()
         loadSettings()
@@ -90,6 +116,17 @@ class SettingsActivity : AppCompatActivity() {
                 _,
                 enabled ->
 
+            if (updatingNotificationSwitch) {
+                return@setOnCheckedChangeListener
+            }
+
+            if (enabled && needsNotificationPermission()) {
+                notificationPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+                return@setOnCheckedChangeListener
+            }
+
             SettingsManager.setNotificationsEnabled(
                 this,
                 enabled
@@ -106,6 +143,11 @@ class SettingsActivity : AppCompatActivity() {
                 },
                 Toast.LENGTH_SHORT
             ).show()
+
+            if (!enabled) {
+                com.example.thermowear.notifications.NotificationHelper
+                    .cancelAlertNotifications(this)
+            }
         }
 
 
@@ -149,6 +191,20 @@ class SettingsActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun needsNotificationPermission(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun setNotificationsSwitch(enabled: Boolean) {
+        SettingsManager.setNotificationsEnabled(this, enabled)
+        updatingNotificationSwitch = true
+        switchNotifications.isChecked = enabled
+        updatingNotificationSwitch = false
+        updateDependentSwitches()
     }
 
 
@@ -214,7 +270,7 @@ class SettingsActivity : AppCompatActivity() {
                 Intent.FLAG_ACTIVITY_CLEAR_TOP or
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 intent
             )
@@ -223,7 +279,7 @@ class SettingsActivity : AppCompatActivity() {
 
         navHistory.setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,
@@ -235,7 +291,7 @@ class SettingsActivity : AppCompatActivity() {
 
         navAlerts.setOnClickListener {
 
-            ScreenTransitions.openFade(
+            ScreenTransitions.openModule(
                 this,
                 Intent(
                     this,

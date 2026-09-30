@@ -4,21 +4,60 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ========================= -->
+    <!-- BLUETOOTH ANTIGUO         -->
+    <!-- Android 11 o inferior     -->
+    <!-- ========================= -->
+
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
     <!--
-        Android 13 o superior necesita
-        permiso explícito para mostrar
-        notificaciones.
+        En Android 11 o inferior el escaneo BLE
+        necesita ubicación.
     -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+
+
+    <!-- ========================= -->
+    <!-- BLUETOOTH ANDROID 12+     -->
+    <!-- ========================= -->
+
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_CONNECT"
+        tools:targetApi="s" />
+
+
+    <!-- ========================= -->
+    <!-- NOTIFICACIONES            -->
+    <!-- ========================= -->
+
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS" />
 
-
-    <!--
-        Permite que las notificaciones
-        utilicen vibración.
-    -->
     <uses-permission
         android:name="android.permission.VIBRATE" />
+
+
+    <!-- ========================= -->
+    <!-- HARDWARE                  -->
+    <!-- ========================= -->
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
 
     <application
@@ -37,42 +76,42 @@
             android:exported="false" />
 
 
-        <!-- Pantalla de Configuración -->
+        <!-- Configuración -->
 
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
 
 
-        <!-- Pantalla de Alertas -->
+        <!-- Alertas -->
 
         <activity
             android:name=".ui.alerts.AlertsActivity"
             android:exported="false" />
 
 
-        <!-- Pantalla de Historial -->
+        <!-- Historial -->
 
         <activity
             android:name=".ui.history.HistoryActivity"
             android:exported="false" />
 
 
-        <!-- Pantalla de Control -->
+        <!-- Control -->
 
         <activity
             android:name=".ui.control.ControlDeviceActivity"
             android:exported="false" />
 
 
-        <!-- Añadir Dispositivo -->
+        <!-- Añadir dispositivo -->
 
         <activity
             android:name=".ui.adddevice.AddDeviceActivity"
             android:exported="false" />
 
 
-        <!-- Mis Dispositivos -->
+        <!-- Mis dispositivos -->
 
         <activity
             android:name=".ui.devices.DevicesActivity"
@@ -86,7 +125,7 @@
             android:exported="false" />
 
 
-        <!-- Splash Screen -->
+        <!-- Splash -->
 
         <activity
             android:name=".ui.splash.SplashActivity"

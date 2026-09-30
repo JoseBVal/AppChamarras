@@ -25,7 +25,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="42dp"
@@ -35,7 +34,6 @@
             android:padding="9dp"
             android:src="@drawable/ic_arrow_back"
             app:tint="@color/tw_text"/>
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,7 +68,8 @@
         app:layout_constraintTop_toBottomOf="@id/headerDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,7 +81,7 @@
 
 
             <!-- ========================= -->
-            <!-- BLUETOOTH                 -->
+            <!-- ICONO BLUETOOTH           -->
             <!-- ========================= -->
 
             <com.google.android.material.card.MaterialCardView
@@ -113,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Dispositivos cercanos"
+                android:text="Buscar Forge V2"
                 android:textAlignment="center"
                 android:textColor="@color/tw_text"
                 android:textSize="23sp"
@@ -124,31 +123,74 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Selecciona la chamarra Forge que deseas conectar."
+                android:text="Enciende la chamarra y asegúrate de que Bluetooth esté activado."
                 android:textAlignment="center"
                 android:textColor="@color/tw_text_secondary"
                 android:textSize="15sp"
                 android:lineSpacingExtra="3dp"/>
 
 
+            <!-- ========================= -->
+            <!-- BOTÓN BUSCAR              -->
+            <!-- ========================= -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnScan"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="32dp"
+                android:text="Buscar dispositivos"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/tw_primary"
+                app:cornerRadius="18dp"
+                app:icon="@drawable/ic_bluetooth"
+                app:iconTint="@color/white"/>
+
+
+            <!-- ========================= -->
+            <!-- ESTADO BÚSQUEDA           -->
+            <!-- ========================= -->
+
             <TextView
+                android:id="@+id/txtScanStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="Pulsa Buscar dispositivos para comenzar."
+                android:textAlignment="center"
+                android:textColor="@color/tw_text_secondary"
+                android:textSize="13sp"/>
+
+
+            <!-- ========================= -->
+            <!-- TÍTULO ENCONTRADOS        -->
+            <!-- ========================= -->
+
+            <TextView
+                android:id="@+id/txtFoundTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
                 android:layout_marginBottom="14dp"
-                android:text="DISPOSITIVOS ENCONTRADOS"
+                android:text="DISPOSITIVO ENCONTRADO"
                 android:textColor="@color/tw_primary"
                 android:textSize="13sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:visibility="gone"/>
 
 
-            <!-- ===================== -->
-            <!-- FORGE V1              -->
-            <!-- ===================== -->
+            <!-- ========================= -->
+            <!-- FORGE V2 REAL             -->
+            <!-- ========================= -->
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardForgeV2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/tw_card_background"
                 app:cardCornerRadius="13dp"
                 app:cardElevation="0dp"
@@ -162,100 +204,6 @@
                     android:orientation="horizontal"
                     android:padding="16dp">
 
-
-                    <!-- LOGO FORGE -->
-
-                    <FrameLayout
-                        android:layout_width="54dp"
-                        android:layout_height="54dp"
-                        android:background="@color/tw_image_background">
-
-                        <ImageView
-                            android:layout_width="46dp"
-                            android:layout_height="46dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/logo_forge"
-                            android:contentDescription="Forge V1"
-                            android:scaleType="fitCenter"/>
-
-                    </FrameLayout>
-
-
-                    <!-- INFORMACIÓN -->
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Forge V1"
-                            android:textColor="@color/tw_text"
-                            android:textSize="17sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="1 zona · Espalda"
-                            android:textColor="@color/tw_text_secondary"
-                            android:textSize="12sp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="● Señal excelente"
-                            android:textColor="@color/tw_green"
-                            android:textSize="11sp"/>
-
-                    </LinearLayout>
-
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnConnect1"
-                        android:layout_width="105dp"
-                        android:layout_height="46dp"
-                        android:text="Conectar"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        app:backgroundTint="@color/tw_primary"
-                        app:cornerRadius="23dp"/>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <!-- ===================== -->
-            <!-- FORGE V2              -->
-            <!-- ===================== -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:cardBackgroundColor="@color/tw_card_background"
-                app:cardCornerRadius="13dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#DFE0E8"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-
-                    <!-- LOGO FORGE -->
 
                     <FrameLayout
                         android:layout_width="54dp"
@@ -273,8 +221,6 @@
                     </FrameLayout>
 
 
-                    <!-- INFORMACIÓN -->
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -283,6 +229,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/txtFoundDeviceName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Forge V2"
@@ -291,18 +238,20 @@
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/txtFoundDeviceInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="2 zonas · Sensor en espalda alta"
+                            android:layout_marginTop="3dp"
+                            android:text="ESP32 · BLE"
                             android:textColor="@color/tw_text_secondary"
                             android:textSize="12sp"/>
 
                         <TextView
+                            android:id="@+id/txtFoundDeviceStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
-                            android:text="● Buena señal"
+                            android:text="● Disponible"
                             android:textColor="@color/tw_green"
                             android:textSize="11sp"/>
 

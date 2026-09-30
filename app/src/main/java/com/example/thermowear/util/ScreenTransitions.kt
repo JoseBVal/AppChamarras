@@ -29,6 +29,17 @@ object ScreenTransitions {
         )
     }
 
+    fun openModule(
+        activity: Activity,
+        intent: Intent
+    ) {
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+        )
+        openFade(activity, intent)
+    }
+
     fun closeSlide(
         activity: Activity
     ) {

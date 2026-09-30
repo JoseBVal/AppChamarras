@@ -164,7 +164,59 @@
                     <ImageView
                         android:layout_width="23dp"
                         android:layout_height="23dp"
-                        android:contentDescription="Seleccionar fecha"
+                        android:contentDescription="Seleccionar mes de uso"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="@color/tw_text_secondary"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDayFilter"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#D6D6DE"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp">
+
+                    <TextView
+                        android:id="@+id/txtSelectedDay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Filtrar por día (opcional)"
+                        android:textColor="@color/tw_text"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:id="@+id/btnClearDayFilter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:text="Mes completo"
+                        android:textColor="@color/tw_primary"
+                        android:textSize="12sp"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:contentDescription="Filtrar por día"
                         android:src="@drawable/ic_calendar"
                         app:tint="@color/tw_text_secondary"/>
 
@@ -225,8 +277,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/txtHistorySummaryTitle"
                     android:layout_marginTop="26dp"
-                    android:text="Resumen de uso"
+                    android:text="Resumen del mes"
                     android:textColor="@color/tw_text"
                     android:textSize="21sp"
                     android:textStyle="bold"/>
