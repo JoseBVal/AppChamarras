@@ -209,13 +209,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginTop="10dp"
-                        android:text="Probar temperatura Forge V2"
+                        android:text="Probar temperatura"
                         android:textAllCaps="false"
                         android:textColor="@color/tw_primary"
                         app:backgroundTint="@color/white"
                         app:cornerRadius="14dp"
                         app:strokeColor="@color/tw_primary"
-                        app:strokeWidth="1dp"/>
+                        app:strokeWidth="1dp" />
 
                 </LinearLayout>
 

@@ -18,7 +18,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.ContextCompat
+import com.example.thermowear.data.AlertManager
+import com.example.thermowear.data.DeviceManager
+import com.example.thermowear.data.HistorySessionTracker
 import java.util.UUID
+import kotlin.math.roundToInt
 
 
 object BleManager {
@@ -27,8 +31,7 @@ object BleManager {
     /* NOMBRE DEL ESP32              */
     /* ============================= */
 
-    private const val DEVICE_NAME =
-        "Forge V2"
+    private val DEVICE_NAMES = setOf("Forge V2")
 
 
     /* ============================= */
@@ -124,6 +127,8 @@ object BleManager {
         false
 
     private var temperaturePolling = false
+    private var lastMaximumTemperatureAlertKey: String? = null
+    private var lastMaximumTemperatureAlertAt = 0L
     private val temperaturePollRunnable = object : Runnable {
         override fun run() {
             if (!temperaturePolling) return
@@ -258,7 +263,7 @@ object BleManager {
         ) {
 
             listener?.onError(
-                "Activa Bluetooth antes de buscar Forge V2."
+                "Activa Bluetooth antes de buscar una chamarra Forge."
             )
 
             return
@@ -310,7 +315,7 @@ object BleManager {
 
 
                     listener?.onError(
-                        "No se encontró Forge V2."
+                        "No se encontró una chamarra Forge V2."
                     )
                 }
 
@@ -394,12 +399,7 @@ object BleManager {
                         ?: return
 
 
-                if (
-                    name.equals(
-                        DEVICE_NAME,
-                        ignoreCase = true
-                    )
-                ) {
+                if (DEVICE_NAMES.any { name.equals(it, ignoreCase = true) }) {
 
                     val address =
                         device.address
@@ -508,6 +508,12 @@ object BleManager {
                         null
 
                     stopTemperaturePolling()
+                    applicationContext?.let { context ->
+                        HistorySessionTracker.finishActiveSession(
+                            context,
+                            gatt.device.address
+                        )
+                    }
                     listener?.onDisconnected()
                 }
             }
@@ -544,7 +550,7 @@ object BleManager {
                 ) {
 
                     listener?.onError(
-                        "Forge V2 no tiene el servicio ThermoWear."
+                        "El dispositivo no tiene el servicio BLE de ThermoWear."
                     )
 
                     return
@@ -616,13 +622,7 @@ object BleManager {
                         ?: return
 
 
-                listener?.onMessageReceived(
-                    message
-                )
-
-                if (message.trim() == "PONG") {
-                    startTemperaturePolling()
-                }
+                dispatchStatusMessage(gatt, message)
             }
 
 
@@ -648,13 +648,7 @@ object BleManager {
                     )
 
 
-                listener?.onMessageReceived(
-                    message
-                )
-
-                if (message.trim() == "PONG") {
-                    startTemperaturePolling()
-                }
+                dispatchStatusMessage(gatt, message)
             }
 
 
@@ -683,6 +677,68 @@ object BleManager {
                 }
             }
         }
+
+
+    @SuppressLint("MissingPermission")
+    private fun dispatchStatusMessage(
+        gatt: BluetoothGatt,
+        message: String
+    ) {
+        val received = message.trim()
+        applicationContext?.let { context ->
+            when {
+                received.startsWith("TEMP:") ->
+                    HistorySessionTracker.touchActiveSession(
+                        context,
+                        gatt.device.address
+                    )
+
+                received.startsWith("MAX_TEMP:") ||
+                        received == "ERROR:TEMP_SENSOR" ||
+                        received == "ERROR:THERMAL_LOCKOUT" ->
+                    HistorySessionTracker.finishActiveSession(
+                        context,
+                        gatt.device.address
+                    )
+            }
+        }
+
+        if (received.startsWith("MAX_TEMP:")) {
+            val temperature =
+                received.substringAfter("MAX_TEMP:").toDoubleOrNull()
+
+            if (temperature != null && temperature.isFinite()) {
+                val deviceAddress = gatt.device.address
+                val alertKey = "$deviceAddress:${temperature.roundToInt()}"
+                val now = System.currentTimeMillis()
+
+                if (alertKey != lastMaximumTemperatureAlertKey ||
+                    now - lastMaximumTemperatureAlertAt > 2_000L
+                ) {
+                    applicationContext?.let { context ->
+                        val device = DeviceManager.getDevices(context)
+                            .firstOrNull { it.id.equals(deviceAddress, ignoreCase = true) }
+
+                        AlertManager.addHighTemperatureAlert(
+                            context = context,
+                            deviceId = device?.id ?: deviceAddress,
+                            deviceName = device?.name?.takeIf { it.isNotBlank() }
+                                ?: "Chamarra Forge",
+                            temperatureC = temperature.roundToInt()
+                        )
+                    }
+
+                    lastMaximumTemperatureAlertKey = alertKey
+                    lastMaximumTemperatureAlertAt = now
+                }
+            }
+        }
+
+        listener?.onMessageReceived(message)
+        if (received == "PONG") {
+            startTemperaturePolling()
+        }
+    }
 
 
     /* ============================= */
@@ -903,7 +959,7 @@ object BleManager {
         ) {
 
             listener?.onError(
-                "No se pudo encontrar Forge V2 guardada."
+                "No se pudo encontrar la chamarra Forge guardada."
             )
         }
     }

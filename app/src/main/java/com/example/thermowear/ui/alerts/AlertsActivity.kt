@@ -1,13 +1,18 @@
 package com.example.thermowear.ui.alerts
 
+import android.Manifest
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.example.thermowear.R
 import com.example.thermowear.data.AlertManager
@@ -39,6 +44,22 @@ class AlertsActivity : ThermoWearActivity() {
 
     private lateinit var btnClearAlerts:
             MaterialButton
+
+    private var pendingDemoTemperatureTest = false
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (pendingDemoTemperatureTest) {
+                pendingDemoTemperatureTest = false
+                addDemoTemperatureAlert(
+                    granted &&
+                            com.example.thermowear.data.SettingsManager.areNotificationsEnabled(this) &&
+                            getSystemService(NotificationManager::class.java).areNotificationsEnabled()
+                )
+            }
+        }
 
 
     override fun onCreate(
@@ -617,64 +638,45 @@ class AlertsActivity : ThermoWearActivity() {
 
 
     private fun createDemoTemperatureAlert() {
-
-        val device =
-            DeviceManager
-                .getDevices(
-                    this
-                )
-                .firstOrNull {
-
-                    it.version ==
-                            ThermoWearVersion.V2
-                }
-
-
-        if (
-            device == null
-        ) {
-
-            Toast.makeText(
-                this,
-                "Añade una chamarra Forge V2 para probar esta alerta.",
-                Toast.LENGTH_LONG
-            ).show()
-
-
+        if (!com.example.thermowear.data.SettingsManager.areNotificationsEnabled(this)) {
+            addDemoTemperatureAlert(notificationEnabled = false)
             return
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            pendingDemoTemperatureTest = true
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return
+        }
 
-        /*
-         * 42 °C se usa únicamente para
-         * demostrar visualmente el evento.
-         *
-         * Cuando integremos el sensor real,
-         * este valor llegará desde el ESP32.
-         */
-        AlertManager
-            .addHighTemperatureAlert(
+        if (!getSystemService(NotificationManager::class.java).areNotificationsEnabled()) {
+            addDemoTemperatureAlert(notificationEnabled = false)
+            return
+        }
 
-                context =
-                    this,
+        addDemoTemperatureAlert(notificationEnabled = true)
+    }
 
-                deviceId =
-                    device.id,
-
-                deviceName =
-                    getForgeDeviceName(
-                        device
-                    ),
-
-                temperatureC =
-                    42
-            )
+    private fun addDemoTemperatureAlert(notificationEnabled: Boolean) {
+        AlertManager.addHighTemperatureAlert(
+            context = this,
+            deviceId = null,
+            deviceName = "dispositivo de prueba",
+            temperatureC = 42
+        )
 
 
         Toast.makeText(
             this,
-            "Alerta de temperatura generada",
-            Toast.LENGTH_SHORT
+            if (notificationEnabled) {
+                "Notificación de temperatura de prueba generada"
+            } else {
+                "Alerta guardada. Activa las notificaciones de ThermoWear en Android para verla."
+            },
+            if (notificationEnabled) Toast.LENGTH_SHORT else Toast.LENGTH_LONG
         ).show()
 
 
@@ -700,6 +702,9 @@ class AlertsActivity : ThermoWearActivity() {
                 "Chamarra Forge V1"
 
             ThermoWearVersion.V2 ->
+                "Chamarra Forge V2"
+
+            ThermoWearVersion.V3 ->
                 "Chamarra Forge V2"
         }
     }

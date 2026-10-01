@@ -2,6 +2,8 @@ package com.example.thermowear.ui.control
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -11,6 +13,9 @@ import android.widget.Toast
 import com.example.thermowear.R
 import com.example.thermowear.bluetooth.BleManager
 import com.example.thermowear.data.DeviceManager
+import com.example.thermowear.data.HistorySessionTracker
+import com.example.thermowear.model.ThermoWearVersion
+import com.example.thermowear.model.ThermoWearZone
 import com.example.thermowear.util.ScreenTransitions
 import com.example.thermowear.ui.ThermoWearActivity
 import com.google.android.material.button.MaterialButton
@@ -67,6 +72,8 @@ class ControlDeviceActivity :
     private var currentTemperatureLabel =
         "-- °C"
 
+    private var sensorFaultNoticeShown = false
+
 
     private lateinit var txtHeatLevel:
             TextView
@@ -84,7 +91,6 @@ class ControlDeviceActivity :
 
     private lateinit var btnZonePower:
             MaterialButton
-
     private lateinit var btnAllZonesPower:
             MaterialButton
 
@@ -129,6 +135,19 @@ class ControlDeviceActivity :
         LOWER_BACK
     }
 
+
+    private var pendingZonePowerZone: Zone? = null
+    private var pendingZonePowerTarget: Boolean? = null
+    private var pendingZonePowerLevel = 2
+    private var waitingForZoneLevelAck = false
+    private val controlHandler = Handler(Looper.getMainLooper())
+    private val zonePowerTimeout = Runnable {
+        if (pendingZonePowerZone != null) {
+            clearPendingZonePower()
+            Toast.makeText(this, "El ESP32 no confirmó la acción. Inténtalo de nuevo.", Toast.LENGTH_LONG).show()
+            updateInterface()
+        }
+    }
 
     private var selectedZone =
         Zone.BACK
@@ -381,8 +400,6 @@ class ControlDeviceActivity :
             findViewById(
                 R.id.btnAllZonesPower
             )
-
-
         heatBack =
             findViewById(
                 R.id.heatBack
@@ -487,7 +504,7 @@ class ControlDeviceActivity :
         btnAllZonesPower.visibility =
             View.GONE
 
-
+        btnZonePower.visibility = View.VISIBLE
         containerTemperature.visibility =
             View.GONE
     }
@@ -504,7 +521,7 @@ class ControlDeviceActivity :
 
 
         txtDeviceVersion.text =
-            "Forge V2 · 2 zonas"
+            "Forge $deviceVersion · 2 zonas"
 
 
         txtPrimaryZoneName.text =
@@ -522,7 +539,7 @@ class ControlDeviceActivity :
         btnAllZonesPower.visibility =
             View.VISIBLE
 
-
+        btnZonePower.visibility = View.VISIBLE
         containerTemperature.visibility =
             View.GONE
     }
@@ -535,10 +552,11 @@ class ControlDeviceActivity :
     private fun configureZoneSelection() {
 
         cardZonePrimary.setOnClickListener {
+            if (pendingZonePowerZone != null) return@setOnClickListener
 
             selectedZone =
                 if (
-                    isV2()
+                    isTwoZoneModel()
                 ) {
 
                     Zone.UPPER_BACK
@@ -558,9 +576,10 @@ class ControlDeviceActivity :
 
 
         cardZoneSecondary.setOnClickListener {
+            if (pendingZonePowerZone != null) return@setOnClickListener
 
             if (
-                !isV2()
+                !isTwoZoneModel()
             ) {
 
                 return@setOnClickListener
@@ -674,6 +693,15 @@ class ControlDeviceActivity :
                         pendingIntensity
                     )
 
+                    getHistoryZone(selectedZone)?.let { zone ->
+                        HistorySessionTracker.changeIntensity(
+                            context = this,
+                            deviceId = deviceId,
+                            zone = zone,
+                            intensity = pendingIntensity
+                        )
+                    }
+
 
                     Toast.makeText(
                         this,
@@ -692,107 +720,12 @@ class ControlDeviceActivity :
 
 
         /* ------------------------- */
-        /* UNA ZONA                  */
+        /* ENCENDIDO POR ZONA        */
         /* ------------------------- */
 
-        btnZonePower
-            .setOnClickListener {
-
-                if (
-                    !deviceConnected
-                ) {
-
-                    showDisconnectedMessage()
-
-                    return@setOnClickListener
-                }
-
-
-                val newState =
-                    !isSelectedZoneEnabled()
-
-
-                val command =
-                    when (
-                        selectedZone
-                    ) {
-
-                        Zone.UPPER_BACK ->
-
-                            if (
-                                newState
-                            ) {
-
-                                "UPPER_ON"
-
-                            } else {
-
-                                "UPPER_OFF"
-                            }
-
-
-                        Zone.LOWER_BACK ->
-
-                            if (
-                                newState
-                            ) {
-
-                                "LOWER_ON"
-
-                            } else {
-
-                                "LOWER_OFF"
-                            }
-
-
-                        Zone.BACK ->
-                            null
-                    }
-
-
-                if (
-                    command == null
-                ) {
-
-                    return@setOnClickListener
-                }
-
-
-                if (
-                    BleManager.sendCommand(
-                        command
-                    )
-                ) {
-
-                    setSelectedZoneEnabled(
-                        newState
-                    )
-
-
-                    Toast.makeText(
-                        this,
-                        if (
-                            newState
-                        ) {
-
-                            "${getSelectedZoneName()} encendida"
-
-                        } else {
-
-                            "${getSelectedZoneName()} apagada"
-                        },
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-
-                    updateInterface()
-
-                } else {
-
-                    showBluetoothError()
-                }
-            }
-
+        btnZonePower.setOnClickListener {
+            toggleZonePower(selectedZone)
+        }
 
         /* ------------------------- */
         /* TODAS                     */
@@ -840,6 +773,22 @@ class ControlDeviceActivity :
 
                     lowerBackEnabled =
                         shouldTurnOn
+
+                    val historyTimestamp = System.currentTimeMillis()
+                    listOf(
+                        Triple(ThermoWearZone.UPPER_BACK, upperBackEnabled, upperBackIntensity),
+                        Triple(ThermoWearZone.LOWER_BACK, lowerBackEnabled, lowerBackIntensity)
+                    ).forEach { (zone, enabled, intensity) ->
+                        HistorySessionTracker.setZoneEnabled(
+                            context = this,
+                            deviceId = deviceId,
+                            version = getHistoryVersion(),
+                            zone = zone,
+                            enabled = enabled,
+                            intensity = intensity,
+                            timestampMillis = historyTimestamp
+                        )
+                    }
 
 
                     Toast.makeText(
@@ -929,7 +878,7 @@ class ControlDeviceActivity :
     private fun updateHeatMap() {
 
         if (
-            isV2()
+            isTwoZoneModel()
         ) {
 
             heatBack.visibility =
@@ -997,7 +946,7 @@ class ControlDeviceActivity :
 
 
         containerTemperature.visibility =
-            if (isV2() && selectedZone == Zone.UPPER_BACK) View.VISIBLE else View.GONE
+            if (isTwoZoneModel()) View.VISIBLE else View.GONE
         txtCurrentTemperature.text = currentTemperatureLabel
 
 
@@ -1019,17 +968,16 @@ class ControlDeviceActivity :
             isSelectedZoneEnabled()
 
 
-        txtZoneStatus.text =
-            if (
-                enabled
-            ) {
-
-                "Estado: Encendida"
-
-            } else {
-
-                "Estado: Apagada"
-            }
+        txtZoneStatus.text = when {
+            pendingZonePowerZone == selectedZone && waitingForZoneLevelAck ->
+                "Aplicando intensidad antes de encender…"
+            pendingZonePowerZone == selectedZone && pendingZonePowerTarget == false ->
+                "Apagando la zona…"
+            pendingZonePowerZone == selectedZone ->
+                "Esperando confirmación del ESP32…"
+            enabled -> "Estado: Encendida"
+            else -> "Estado: Apagada"
+        }
 
 
         txtZoneStatus.setTextColor(
@@ -1056,26 +1004,24 @@ class ControlDeviceActivity :
     private fun updateZoneCards() {
 
         if (
-            isV2()
+            isTwoZoneModel()
         ) {
 
-            txtPrimaryZoneInfo.text =
-                currentTemperatureLabel
+            val upperState = if (upperBackEnabled) "Encendida" else "Apagada"
+            val lowerState = if (lowerBackEnabled) "Encendida" else "Apagada"
+
+            txtPrimaryZoneInfo.text = if (selectedZone == Zone.UPPER_BACK) {
+                "Seleccionada · $upperState"
+            } else {
+                "Toca para elegir · $upperState"
+            }
 
 
-            txtSecondaryZoneInfo.text =
-                if (
-                    lowerBackEnabled
-                ) {
-
-                    getIntensityName(
-                        lowerBackIntensity
-                    )
-
-                } else {
-
-                    "Apagada"
-                }
+            txtSecondaryZoneInfo.text = if (selectedZone == Zone.LOWER_BACK) {
+                "Seleccionada · $lowerState"
+            } else {
+                "Toca para elegir · $lowerState"
+            }
 
         } else {
 
@@ -1103,143 +1049,60 @@ class ControlDeviceActivity :
     private fun updateSelectedCardStyle() {
 
         val selectedStroke =
-            getColor(
-                R.color.tw_primary
-            )
-
+            getColor(R.color.tw_primary)
 
         val normalStroke =
-            Color.parseColor(
-                "#E5E5EC"
-            )
+            Color.parseColor("#E5E5EC")
 
+        val selectedBackground =
+            Color.parseColor("#EEE8FA")
 
-        if (
-            isV2()
-        ) {
+        val normalBackground =
+            Color.parseColor("#FFFFFF")
 
-            if (
-                selectedZone ==
-                Zone.UPPER_BACK
-            ) {
+        if (isTwoZoneModel()) {
+            val upperSelected = selectedZone == Zone.UPPER_BACK
 
-                cardZonePrimary.strokeWidth =
-                    dpToPx(
-                        2
-                    )
+            cardZonePrimary.strokeWidth = dpToPx(if (upperSelected) 2 else 1)
+            cardZonePrimary.strokeColor = if (upperSelected) selectedStroke else normalStroke
+            cardZonePrimary.setCardBackgroundColor(if (upperSelected) selectedBackground else normalBackground)
 
-
-                cardZonePrimary.strokeColor =
-                    selectedStroke
-
-
-                cardZoneSecondary.strokeWidth =
-                    dpToPx(
-                        1
-                    )
-
-
-                cardZoneSecondary.strokeColor =
-                    normalStroke
-
-            } else {
-
-                cardZonePrimary.strokeWidth =
-                    dpToPx(
-                        1
-                    )
-
-
-                cardZonePrimary.strokeColor =
-                    normalStroke
-
-
-                cardZoneSecondary.strokeWidth =
-                    dpToPx(
-                        2
-                    )
-
-
-                cardZoneSecondary.strokeColor =
-                    selectedStroke
-            }
-
+            cardZoneSecondary.strokeWidth = dpToPx(if (upperSelected) 1 else 2)
+            cardZoneSecondary.strokeColor = if (upperSelected) normalStroke else selectedStroke
+            cardZoneSecondary.setCardBackgroundColor(if (upperSelected) normalBackground else selectedBackground)
         } else {
-
-            cardZonePrimary.strokeWidth =
-                dpToPx(
-                    2
-                )
-
-
-            cardZonePrimary.strokeColor =
-                selectedStroke
+            cardZonePrimary.strokeWidth = dpToPx(2)
+            cardZonePrimary.strokeColor = selectedStroke
+            cardZonePrimary.setCardBackgroundColor(selectedBackground)
         }
     }
-
 
     /* ============================= */
     /* BOTONES ESTADO                */
     /* ============================= */
 
     private fun updatePowerButtons() {
-
-        btnZonePower.text =
-            if (
-                isSelectedZoneEnabled()
-            ) {
-
-                "Apagar zona"
-
-            } else {
-
-                "Encender zona"
-            }
-
-
-        if (
-            isV2()
-        ) {
-
-            btnAllZonesPower.visibility =
-                View.VISIBLE
-
-
-            btnAllZonesPower.text =
-                if (
-                    areAllZonesEnabled()
-                ) {
-
-                    "Apagar todas las zonas"
-
-                } else {
-
-                    "Encender todas las zonas"
-                }
-
-        } else {
-
-            btnAllZonesPower.visibility =
-                View.GONE
+        btnZonePower.text = when {
+            pendingZonePowerZone == selectedZone && waitingForZoneLevelAck -> "Aplicando intensidad…"
+            pendingZonePowerZone == selectedZone && pendingZonePowerTarget == false -> "Apagando…"
+            pendingZonePowerZone == selectedZone -> "Encendiendo…"
+            isSelectedZoneEnabled() -> "Apagar ${getSelectedZoneName()}"
+            else -> "Encender · ${getIntensityName(pendingIntensity)}"
         }
 
+        if (isTwoZoneModel()) {
+            btnAllZonesPower.visibility = View.VISIBLE
+            btnAllZonesPower.text = if (areAllZonesEnabled()) "Apagar ambas" else "Encender ambas"
+        } else {
+            btnAllZonesPower.visibility = View.GONE
+        }
 
-        sliderIntensity.isEnabled =
-            deviceConnected && isV2()
-
-
-        btnApplyIntensity.isEnabled =
-            deviceConnected && isV2()
-
-
-        btnZonePower.isEnabled =
-            deviceConnected && isV2()
-
-
-        btnAllZonesPower.isEnabled =
-            deviceConnected && isV2()
+        val idle = pendingZonePowerZone == null
+        sliderIntensity.isEnabled = deviceConnected && isTwoZoneModel() && idle
+        btnApplyIntensity.isEnabled = deviceConnected && isTwoZoneModel() && idle
+        btnZonePower.isEnabled = deviceConnected && isTwoZoneModel() && idle
+        btnAllZonesPower.isEnabled = deviceConnected && isTwoZoneModel() && idle
     }
-
 
     /* ============================= */
     /* INTENSIDAD                    */
@@ -1358,6 +1221,139 @@ class ControlDeviceActivity :
     }
 
 
+    private fun toggleZonePower(zone: Zone) {
+        if (!deviceConnected) { showDisconnectedMessage(); return }
+        if (pendingZonePowerZone != null) return
+
+        val enable = !isZoneEnabled(zone)
+        pendingZonePowerZone = zone
+        pendingZonePowerTarget = enable
+        waitingForZoneLevelAck = enable
+        pendingZonePowerLevel = if (zone == selectedZone) pendingIntensity else getZoneIntensity(zone)
+
+        val command = when (zone) {
+            Zone.UPPER_BACK -> if (enable) "UPPER_LEVEL:$pendingZonePowerLevel" else "UPPER_OFF"
+            Zone.LOWER_BACK -> if (enable) "LOWER_LEVEL:$pendingZonePowerLevel" else "LOWER_OFF"
+            Zone.BACK -> null
+        }
+        if (command == null || !BleManager.sendCommand(command)) {
+            clearPendingZonePower()
+            showBluetoothError()
+            updateInterface()
+            return
+        }
+        controlHandler.postDelayed(zonePowerTimeout, 5_000L)
+        updatePowerButtons()
+        updateSelectedZone()
+    }
+
+    private fun handleZonePowerAcknowledgement(message: String): Boolean {
+        val zone = pendingZonePowerZone ?: return false
+        val enable = pendingZonePowerTarget ?: return false
+
+        if (enable && waitingForZoneLevelAck) {
+            val prefix = when (zone) {
+                Zone.UPPER_BACK -> "OK:UPPER_LEVEL:"
+                Zone.LOWER_BACK -> "OK:LOWER_LEVEL:"
+                Zone.BACK -> return false
+            }
+            if (!message.startsWith(prefix)) return false
+            val confirmedLevel = message.substringAfterLast(':').toIntOrNull()
+            if (confirmedLevel != pendingZonePowerLevel) return false
+
+            waitingForZoneLevelAck = false
+            controlHandler.removeCallbacks(zonePowerTimeout)
+            setZoneIntensity(zone, confirmedLevel)
+            getHistoryZone(zone)?.let { historyZone ->
+                HistorySessionTracker.changeIntensity(
+                    context = this,
+                    deviceId = deviceId,
+                    zone = historyZone,
+                    intensity = confirmedLevel
+                )
+            }
+            val onCommand = if (zone == Zone.UPPER_BACK) "UPPER_ON" else "LOWER_ON"
+            if (!BleManager.sendCommand(onCommand)) {
+                clearPendingZonePower()
+                showBluetoothError()
+                updateInterface()
+            } else {
+                controlHandler.postDelayed(zonePowerTimeout, 5_000L)
+                updatePowerButtons()
+                updateSelectedZone()
+            }
+            return true
+        }
+
+        val expected = when (zone) {
+            Zone.UPPER_BACK -> if (enable) "OK:UPPER_ON" else "OK:UPPER_OFF"
+            Zone.LOWER_BACK -> if (enable) "OK:LOWER_ON" else "OK:LOWER_OFF"
+            Zone.BACK -> return false
+        }
+        if (message != expected) return false
+
+        setZoneEnabled(zone, enable)
+        getHistoryZone(zone)?.let { historyZone ->
+            HistorySessionTracker.setZoneEnabled(
+                context = this,
+                deviceId = deviceId,
+                version = getHistoryVersion(),
+                zone = historyZone,
+                enabled = enable,
+                intensity = getZoneIntensity(zone)
+            )
+        }
+        clearPendingZonePower()
+        Toast.makeText(
+            this,
+            "${getZoneName(zone)} ${if (enable) "encendida" else "apagada"}",
+            Toast.LENGTH_SHORT
+        ).show()
+        updateInterface()
+        return true
+    }
+
+    private fun clearPendingZonePower() {
+        controlHandler.removeCallbacks(zonePowerTimeout)
+        pendingZonePowerZone = null
+        pendingZonePowerTarget = null
+        waitingForZoneLevelAck = false
+    }
+
+    private fun setZoneIntensity(zone: Zone, intensity: Int) {
+        when (zone) {
+            Zone.BACK -> backIntensity = intensity
+            Zone.UPPER_BACK -> upperBackIntensity = intensity
+            Zone.LOWER_BACK -> lowerBackIntensity = intensity
+        }
+    }
+
+    private fun isZoneEnabled(zone: Zone): Boolean = when (zone) {
+        Zone.BACK -> backEnabled
+        Zone.UPPER_BACK -> upperBackEnabled
+        Zone.LOWER_BACK -> lowerBackEnabled
+    }
+
+    private fun setZoneEnabled(zone: Zone, enabled: Boolean) {
+        when (zone) {
+            Zone.BACK -> backEnabled = enabled
+            Zone.UPPER_BACK -> upperBackEnabled = enabled
+            Zone.LOWER_BACK -> lowerBackEnabled = enabled
+        }
+    }
+
+    private fun getZoneName(zone: Zone): String = when (zone) {
+        Zone.BACK -> "Espalda"
+        Zone.UPPER_BACK -> "Espalda alta"
+        Zone.LOWER_BACK -> "Espalda baja"
+    }
+
+    private fun getZoneIntensity(zone: Zone): Int = when (zone) {
+        Zone.BACK -> backIntensity
+        Zone.UPPER_BACK -> upperBackIntensity
+        Zone.LOWER_BACK -> lowerBackIntensity
+    }
+
     /* ============================= */
     /* ESTADOS DE ZONA               */
     /* ============================= */
@@ -1423,6 +1419,20 @@ class ControlDeviceActivity :
     }
 
 
+    private fun getHistoryVersion(): ThermoWearVersion =
+        runCatching {
+            ThermoWearVersion.valueOf(deviceVersion)
+        }.getOrDefault(ThermoWearVersion.V1)
+
+
+    private fun getHistoryZone(zone: Zone): ThermoWearZone? =
+        when (zone) {
+            Zone.BACK -> ThermoWearZone.BACK
+            Zone.UPPER_BACK -> ThermoWearZone.UPPER_BACK
+            Zone.LOWER_BACK -> ThermoWearZone.LOWER_BACK
+        }
+
+
     private fun setSelectedIntensity(
         intensity: Int
     ) {
@@ -1469,7 +1479,7 @@ class ControlDeviceActivity :
             Boolean {
 
         return if (
-            isV2()
+            isTwoZoneModel()
         ) {
 
             upperBackEnabled &&
@@ -1482,12 +1492,8 @@ class ControlDeviceActivity :
     }
 
 
-    private fun isV2():
-            Boolean {
-
-        return deviceVersion.uppercase() ==
-                "V2"
-    }
+    private fun isTwoZoneModel(): Boolean =
+        deviceVersion.equals("V2", ignoreCase = true)
 
 
     /* ============================= */
@@ -1551,9 +1557,38 @@ class ControlDeviceActivity :
     override fun onMessageReceived(message: String) {
         val received = message.trim()
         runOnUiThread {
+            if (handleZonePowerAcknowledgement(received)) {
+                return@runOnUiThread
+            }
             when {
+                received.startsWith("MAX_TEMP:") -> {
+                    clearPendingZonePower()
+                    val temperature = received.substringAfter("MAX_TEMP:").toDoubleOrNull()
+                    if (temperature != null && temperature.isFinite()) {
+                        currentTemperatureLabel =
+                            String.format(Locale.US, "%.1f °C", temperature)
+                        txtCurrentTemperature.text = currentTemperatureLabel
+
+                        upperBackEnabled = false
+                        lowerBackEnabled = false
+                        backEnabled = false
+                        BleManager.sendCommand("ALL_OFF")
+                        updatePowerButtons()
+                        updateZoneCards()
+                        updateInterface()
+
+                        Toast.makeText(
+                            this,
+                            "Temperatura máxima del prototipo alcanzada. Calefacción apagada.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
                 received.startsWith("TEMP:") -> {
                     val temperature = received.substringAfter("TEMP:").toDoubleOrNull()
+                    if (temperature != null && temperature.isFinite()) {
+                        sensorFaultNoticeShown = false
+                    }
                     currentTemperatureLabel =
                         if (temperature != null && temperature.isFinite() &&
                             temperature in -55.0..125.0
@@ -1566,11 +1601,41 @@ class ControlDeviceActivity :
                     updateZoneCards()
                 }
                 received == "ERROR:TEMP_SENSOR" -> {
+                    clearPendingZonePower()
                     currentTemperatureLabel = "Sensor sin lectura"
                     txtCurrentTemperature.text = currentTemperatureLabel
+                    upperBackEnabled = false
+                    lowerBackEnabled = false
+                    backEnabled = false
+                    updatePowerButtons()
                     updateZoneCards()
+                    updateInterface()
+                    if (!sensorFaultNoticeShown) {
+                        sensorFaultNoticeShown = true
+                        Toast.makeText(
+                            this,
+                            "Sin lectura del sensor. Calefacción apagada.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                received == "ERROR:THERMAL_LOCKOUT" -> {
+                    clearPendingZonePower()
+                    upperBackEnabled = false
+                    lowerBackEnabled = false
+                    backEnabled = false
+                    updateInterface()
+                    Toast.makeText(
+                        this,
+                        "La chamarra sigue bloqueada hasta que se enfríe.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 received.startsWith("ERROR") -> {
+                    if (pendingZonePowerZone != null) {
+                        clearPendingZonePower()
+                        updateInterface()
+                    }
                     Toast.makeText(this, "ESP32: $received", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -1581,6 +1646,8 @@ class ControlDeviceActivity :
     override fun onDisconnected() {
 
         runOnUiThread {
+
+            clearPendingZonePower()
 
             deviceConnected =
                 false
@@ -1614,7 +1681,7 @@ class ControlDeviceActivity :
 
             Toast.makeText(
                 this,
-                "Se perdió la conexión con Forge V2.",
+                "Se perdió la conexión con $deviceName.",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -1644,7 +1711,7 @@ class ControlDeviceActivity :
 
         Toast.makeText(
             this,
-            "Forge V2 está desconectada.",
+            "$deviceName está desconectada.",
             Toast.LENGTH_SHORT
         ).show()
     }

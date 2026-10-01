@@ -53,6 +53,8 @@ class AddDeviceActivity :
             String? =
         null
 
+    private var foundName = "Forge V2"
+
 
     /* ============================= */
     /* PERMISOS                      */
@@ -81,7 +83,7 @@ class AddDeviceActivity :
 
                 Toast.makeText(
                     this,
-                    "ThermoWear necesita permiso de Bluetooth para encontrar Forge V2.",
+                    "ThermoWear necesita permiso de Bluetooth para encontrar chamarras Forge.",
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -211,7 +213,7 @@ class AddDeviceActivity :
 
                 Toast.makeText(
                     this,
-                    "Primero busca Forge V2.",
+                    "Primero busca una chamarra Forge.",
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -325,7 +327,7 @@ class AddDeviceActivity :
 
 
         txtScanStatus.text =
-            "Buscando Forge V2..."
+            "Buscando chamarras Forge..."
 
 
         btnScan.text =
@@ -367,12 +369,12 @@ class AddDeviceActivity :
 
         foundAddress =
             address
-
+        foundName = name
 
         runOnUiThread {
 
             txtScanStatus.text =
-                "Forge V2 encontrada."
+                "$name encontrada."
 
 
             txtFoundTitle.visibility =
@@ -483,7 +485,7 @@ class AddDeviceActivity :
              * automáticamente.
              */
             txtScanStatus.text =
-                "Comprobando comunicación con Forge V2..."
+                "Comprobando comunicación con $foundName..."
         }
     }
 
@@ -503,11 +505,11 @@ class AddDeviceActivity :
                 "PONG"
             ) {
 
-                saveRealForgeV2()
+                saveRealForge()
 
 
                 txtScanStatus.text =
-                    "Forge V2 conectada correctamente."
+                    "$foundName conectada correctamente."
 
 
                 txtFoundDeviceStatus.text =
@@ -520,7 +522,7 @@ class AddDeviceActivity :
 
                 Toast.makeText(
                     this,
-                    "Forge V2 conectada correctamente.",
+                    "$foundName conectada correctamente.",
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -547,7 +549,7 @@ class AddDeviceActivity :
     /* GUARDAR DISPOSITIVO           */
     /* ============================= */
 
-    private fun saveRealForgeV2() {
+    private fun saveRealForge() {
 
         val address =
             foundAddress
@@ -561,10 +563,9 @@ class AddDeviceActivity :
                     address,
 
                 name =
-                    "Chamarra Forge V2",
+                    "Chamarra $foundName",
 
-                version =
-                    ThermoWearVersion.V2,
+                version = ThermoWearVersion.V2,
 
                 battery =
                     0,

@@ -419,6 +419,26 @@ object HistoryManager {
     }
 
 
+    /** Stops legacy demo seeding without deleting previously saved sessions. */
+    fun removeLegacyDemoHistoryIfPresent(context: Context) {
+        val preferences = context.getSharedPreferences(
+            PREFS_NAME,
+            Context.MODE_PRIVATE
+        )
+        val hasDemoMarker =
+            preferences.contains(KEY_DEMO_CREATED) ||
+                    preferences.getInt(KEY_DEMO_VERSION, 0) > 0
+
+        if (!hasDemoMarker) return
+
+        // Legacy demo sessions share the same random ID format as real sessions,
+        // so the app cannot safely distinguish them without risking real data loss.
+        preferences.edit()
+            .remove(KEY_DEMO_CREATED)
+            .remove(KEY_DEMO_VERSION)
+            .apply()
+    }
+
     /* ============================= */
     /* DATOS DE DEMOSTRACIÓN         */
     /* ============================= */
@@ -514,7 +534,7 @@ object HistoryManager {
                 /* FORGE V2                 */
                 /* ======================== */
 
-                ThermoWearVersion.V2 -> {
+                ThermoWearVersion.V2, ThermoWearVersion.V3 -> {
 
                     createV2DemoHistory(
                         device =

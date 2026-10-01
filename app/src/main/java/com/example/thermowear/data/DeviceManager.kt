@@ -38,10 +38,12 @@ object DeviceManager {
                 devices.add(
                     ThermoWearDevice(
                         id = item.getString("id"),
-                        name = item.getString("name"),
-                        version = ThermoWearVersion.valueOf(
-                            item.getString("version")
-                        ),
+                        name = item.getString("name")
+                            .replace("Forge V3", "Forge V2", ignoreCase = true),
+                        version = when (item.getString("version").uppercase()) {
+                            "V3" -> ThermoWearVersion.V2
+                            else -> ThermoWearVersion.valueOf(item.getString("version"))
+                        },
                         battery = item.getInt("battery"),
                         connected = item.getBoolean("connected")
                     )

@@ -2,7 +2,8 @@ package com.example.thermowear.model
 
 enum class ThermoWearVersion {
     V1,
-    V2
+    V2,
+    V3
 }
 
 data class ThermoWearDevice(
@@ -16,7 +17,7 @@ data class ThermoWearDevice(
     val zoneCount: Int
         get() = when (version) {
             ThermoWearVersion.V1 -> 1
-            ThermoWearVersion.V2 -> 2
+            ThermoWearVersion.V2, ThermoWearVersion.V3 -> 2
         }
 
     val hasTemperatureSensor: Boolean

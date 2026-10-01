@@ -42,17 +42,6 @@ class HistoryActivity : ThermoWearActivity() {
     override val isNavigationMenu = true
 
 
-    /**
-     * true mientras todavía no tenemos
-     * Bluetooth conectado al hardware real.
-     *
-     * Cuando lleguemos a esa etapa,
-     * podremos ponerlo en false.
-     */
-    private val demoDataEnabled =
-        true
-
-
     private var devices =
         listOf<ThermoWearDevice>()
 
@@ -141,6 +130,7 @@ class HistoryActivity : ThermoWearActivity() {
     override fun onResume() {
 
         super.onResume()
+
 
         loadDevices()
         updateAlertIndicator()
@@ -260,16 +250,6 @@ class HistoryActivity : ThermoWearActivity() {
             }
 
 
-        if (demoDataEnabled) {
-
-            HistoryManager
-                .createDemoHistoryIfNeeded(
-                    this,
-                    devices
-                )
-        }
-
-
         emptyDevicesState.visibility =
             View.GONE
 
@@ -383,6 +363,9 @@ class HistoryActivity : ThermoWearActivity() {
                         "V1"
 
                     ThermoWearVersion.V2 ->
+                        "V2"
+
+                    ThermoWearVersion.V3 ->
                         "V2"
                 }
 
@@ -576,6 +559,9 @@ class HistoryActivity : ThermoWearActivity() {
 
                 ThermoWearVersion.V2 ->
                     "V2"
+
+                ThermoWearVersion.V3 ->
+                    "V2"
             }
 
 
@@ -591,6 +577,10 @@ class HistoryActivity : ThermoWearActivity() {
                     "Forge V1 • 1 zona"
 
                 ThermoWearVersion.V2 ->
+
+                    "Forge V2 • 2 zonas"
+
+                ThermoWearVersion.V3 ->
 
                     "Forge V2 • 2 zonas"
             }
@@ -699,7 +689,7 @@ class HistoryActivity : ThermoWearActivity() {
                     )
 
 
-                ThermoWearVersion.V2 ->
+                ThermoWearVersion.V2, ThermoWearVersion.V3 ->
 
                     listOf(
                         ThermoWearZone.UPPER_BACK,

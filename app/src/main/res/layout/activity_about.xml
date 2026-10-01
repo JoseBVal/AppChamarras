@@ -390,6 +390,71 @@
             </com.google.android.material.card.MaterialCardView>
 
 
+            <!-- FORGE V3 -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E6"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="18dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F0EEFA">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="6dp"
+                            android:src="@drawable/logo_forge"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Forge V3"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Forge V3 · etapa propuesta"
+                            android:textColor="@color/tw_text"
+                            android:textSize="17sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Versión optimizada con una placa propia que mejora la fiabilidad y reduce el cableado. Ofrece tres niveles de intensidad, mayor eficiencia y un diseño preparado para futuras mejoras y producción profesional."
+                            android:textColor="@color/tw_text_secondary"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
             <!-- FUTURAS VERSIONES -->
 
             <com.google.android.material.card.MaterialCardView

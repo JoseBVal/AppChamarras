@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Buscar Forge V2"
+                android:text="Buscar chamarra Forge"
                 android:textAlignment="center"
                 android:textColor="@color/tw_text"
                 android:textSize="23sp"
@@ -215,7 +215,7 @@
                             android:layout_height="46dp"
                             android:layout_gravity="center"
                             android:src="@drawable/logo_forge"
-                            android:contentDescription="Forge V2"
+                            android:contentDescription="Chamarra Forge"
                             android:scaleType="fitCenter"/>
 
                     </FrameLayout>
@@ -232,7 +232,7 @@
                             android:id="@+id/txtFoundDeviceName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Forge V2"
+                            android:text="Chamarra Forge"
                             android:textColor="@color/tw_text"
                             android:textSize="17sp"
                             android:textStyle="bold"/>

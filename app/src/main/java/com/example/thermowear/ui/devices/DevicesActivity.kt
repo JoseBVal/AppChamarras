@@ -13,6 +13,8 @@ import com.example.thermowear.R
 import com.example.thermowear.bluetooth.BleManager
 import com.example.thermowear.data.AlertManager
 import com.example.thermowear.data.DeviceManager
+import com.example.thermowear.data.HistoryManager
+import com.example.thermowear.data.HistorySessionTracker
 import com.example.thermowear.model.ThermoWearDevice
 import com.example.thermowear.model.ThermoWearVersion
 import com.example.thermowear.notifications.NotificationHelper
@@ -81,6 +83,9 @@ class DevicesActivity :
         super.onCreate(
             savedInstanceState
         )
+
+        HistoryManager.removeLegacyDemoHistoryIfPresent(this)
+        HistorySessionTracker.recoverInterruptedSession(this)
 
 
         setContentView(
@@ -430,7 +435,7 @@ class DevicesActivity :
 
                     Toast.makeText(
                         this,
-                        "Conectando con Forge V2...",
+                        "Conectando con Forge ${device.version.name}...",
                         Toast.LENGTH_SHORT
                     ).show()
 
@@ -539,8 +544,7 @@ class DevicesActivity :
 
                 if (
                     device.connected &&
-                    device.version ==
-                    ThermoWearVersion.V2
+                    device.version != ThermoWearVersion.V1
                 ) {
 
                     BleManager.disconnect()
@@ -614,16 +618,18 @@ class DevicesActivity :
             }
 
 
+            val connectedVersion = reconnectingDeviceId
+                ?.let { id -> DeviceManager.getDevices(this).firstOrNull { it.id == id }?.version?.name }
+
             reconnectingDeviceId =
                 null
 
 
             loadDevices()
 
-
             Toast.makeText(
                 this,
-                "Forge V2 conectada",
+                connectedVersion?.let { "Forge $it conectada" } ?: "Chamarra conectada",
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -645,8 +651,7 @@ class DevicesActivity :
                     this
                 )
                 .filter {
-                    it.version ==
-                            ThermoWearVersion.V2
+                    it.version != ThermoWearVersion.V1
                 }
                 .forEach {
 
@@ -663,7 +668,7 @@ class DevicesActivity :
 
             Toast.makeText(
                 this,
-                "Forge V2 desconectada",
+                "Chamarra desconectada",
                 Toast.LENGTH_SHORT
             ).show()
         }
